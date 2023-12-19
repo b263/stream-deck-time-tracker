@@ -1,1 +1,1 @@
-# stream-deck-time-tracker
+# Time tracker plugin for Elgato Stream Deck
