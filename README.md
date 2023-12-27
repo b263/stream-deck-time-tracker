@@ -4,7 +4,7 @@ Time tracker using the Tracking Time platform. Requires a [free account](https:/
 
 Adds a button for tracking time on projects or tasks. Displays the time that has been tracked today and on the current time period.
 
-[Preview](./assets/preview.png)
+![Preview](assets/preview.png)
 
 ## Installation 
 
