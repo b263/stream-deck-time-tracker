@@ -1,5 +1,7 @@
 # Time tracker plugin for Elgato Stream Deck (v0.1.0)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M3SNODI)
+
 Time tracker using the Tracking Time platform. Requires a [free account](https://trackingtime.co/).
 
 Adds a button for tracking time on projects or tasks. Displays the time that has been tracked today and on the current time period.
