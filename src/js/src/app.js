@@ -32,10 +32,6 @@ $SD.onConnected(() => {
 
 const trackerAction = new Action("dev.b263.time-tracker.track");
 
-trackerAction.onWillAppear(({ context }) => {
-  $SD.getSettings(context);
-});
-
 trackerAction.onDidReceiveSettings(({ context, payload: { settings } }) => {
   if (!Tracker.has(context)) {
     return console.warn("Tracker not found", { context });
@@ -48,6 +44,7 @@ trackerAction.onWillAppear(async ({ context }) => {
     const tracker = Tracker.create(context, false);
     const api = await getApi();
     new KimaiApiTrackerConnector(api, store).connect(tracker);
+    $SD.getSettings(context);
   }
 });
 

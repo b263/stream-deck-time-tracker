@@ -8,7 +8,14 @@ const State = new Map();
 
 $PI.onConnected(
   ({ actionInfo, appInfo, connection, messageType, port, uuid }) => {
-    console.log({ actionInfo, appInfo, connection, messageType, port, uuid });
+    console.log("onConnected", {
+      actionInfo,
+      appInfo,
+      connection,
+      messageType,
+      port,
+      uuid,
+    });
 
     const {
       // eslint-disable-next-line no-unused-vars
@@ -22,17 +29,20 @@ $PI.onConnected(
     $PI.getGlobalSettings();
 
     $PI.onDidReceiveSettings(action, ({ payload: { settings } }) =>
-      onSettingsReceived(settings, true)
+      onSettingsReceived(settings)
     );
 
     $PI.onDidReceiveGlobalSettings(({ payload: { settings } }) =>
       onGlobalSettingsReceived(settings)
     );
 
-    const onFormChangeDebounced = Utils.debounce(200, () => {
-      const settings = getFormValue();
-      if (settings.projectId != State.get(StateKey.settings).projectId) {
+    const onFormChangeDebounced = Utils.debounce(100, async () => {
+      const settings = await getFormValue();
+      if (
+        settings.projectId != State.get(StateKey.settings)?.value?.projectId
+      ) {
         loadActivities(settings.projectId);
+        settings.activityId = null;
       }
       $PI.setSettings(
         settingsByProvider(BackendProvider.kimai, {
@@ -65,22 +75,8 @@ document.getElementById("sign-out").addEventListener("click", () => {
   $PI.getGlobalSettings();
 });
 
-function onSettingsReceived(settings) {
-  console.log("onSettingsReceived", settings);
+async function onSettingsReceived(settings) {
   State.set(StateKey.settings, settings);
-  if (!formValueEqualsSettings(settings)) {
-    Utils.setFormValue(
-      settings.value,
-      document.getElementById("property-inspector")
-    );
-  }
-}
-
-function formValueEqualsSettings(settings) {
-  return (
-    settings.value.projectId === +getFormValue().projectId &&
-    settings.value.activityId === +getFormValue().activityId
-  );
 }
 
 function onGlobalSettingsReceived(settings) {
@@ -98,7 +94,7 @@ function onGlobalSettingsReceived(settings) {
 
 async function loadProjects() {
   const projects = await getApi().getProjects();
-  const projectId = State.get("settings").projectId;
+  const projectId = State.get(StateKey.settings)?.value?.projectId;
   const options = [
     '<option value="">Select project</option>',
     ...projects.map((project) => {
@@ -107,14 +103,14 @@ async function loadProjects() {
     }),
   ];
   document.querySelector("[name='projectId']").innerHTML = options.join("");
-  if (projectId?.length) {
+  if (typeof projectId === "number") {
     loadActivities(projectId);
   }
 }
 
 async function loadActivities(projectId) {
   const activities = await getApi().getActivities(projectId);
-  const activityId = State.get("settings")?.value?.activityId;
+  const activityId = State.get(StateKey.settings)?.value?.activityId;
   resetActivityIfNotInProject(activities, activityId);
   const options = [
     '<option value="">Select activity</option>',
@@ -143,8 +139,27 @@ function getApi() {
   return new KimaiApi(url, user, password);
 }
 
-function getFormValue() {
-  return Utils.getFormValue(document.getElementById("property-inspector"));
+async function getForm() {
+  return new Promise((resolve) => {
+    const tryGetForm = () => {
+      const form = document.getElementById("property-inspector");
+      if (form) {
+        resolve(form);
+      } else {
+        window.setTimeout(tryGetForm, 10);
+      }
+    };
+    tryGetForm();
+  });
+}
+
+async function getFormValue() {
+  const form = await getForm();
+  return {
+    projectId: "",
+    activityId: "",
+    ...Utils.getFormValue(form),
+  };
 }
 
 function settingsByProvider(provider, settings) {
