@@ -1,4 +1,5 @@
 import nodeResolve from "@rollup/plugin-node-resolve";
+import { sentryRollupPlugin } from "@sentry/rollup-plugin";
 
 function config([input, file]) {
   return {
@@ -6,8 +7,17 @@ function config([input, file]) {
     output: {
       file,
       format: "cjs",
+      sourcemap: true,
     },
-    plugins: [nodeResolve()],
+    plugins: [
+      nodeResolve(),
+      sentryRollupPlugin({
+        authToken: process.env.SENTRY_AUTH_TOKEN,
+        org: "b263",
+        project: "stream-deck-time-tracker",
+        telemetry: false,
+      }),
+    ],
   };
 }
 
