@@ -1,0 +1,8 @@
+/src/dev.b263.time-tracker.sdPlugin/**/*.bundle.js
+/src/dev.b263.time-tracker.sdPlugin/*.txt
+
+DistributionTool
+
+.DS_Store
+*.svg
+

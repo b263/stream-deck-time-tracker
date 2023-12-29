@@ -1,0 +1,40 @@
+{
+  "SDKVersion": 2,
+  "Author": "Bastian Bräu",
+  "Name": "Time Tracker",
+  "Description": "Time tracker using the Tracking Time platform. Requires a free account.",
+  "Icon": "assets/category",
+  "URL": "https://github.com/b263/stream-deck-time-tracker/issues",
+  "Version": "0.1.0",
+  "CodePath": "app.html",
+  "Software": {
+    "MinimumVersion": "5.0"
+  },
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.11"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Category": "Time Tracker",
+  "CategoryIcon": "assets/category",
+  "Actions": [
+    {
+      "Icon": "actions/track/assets/action",
+      "Name": "Track",
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "actions/track/assets/action"
+        }
+      ],
+      "Tooltip": "Start/stop time tracking",
+      "UUID": "dev.b263.time-tracker.track",
+      "PropertyInspectorPath": "actions/track/property-inspector/inspector.html"
+    }
+  ]
+}

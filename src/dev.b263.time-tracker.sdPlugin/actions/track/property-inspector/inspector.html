@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>dev.b263.time-tracker Property Inspector</title>
+    <link rel="stylesheet" href="../../../libs/css/sdpi.css" />
+    <link rel="stylesheet" href="../../../styles/main.css" />
+    <script
+      src="https://js.sentry-cdn.com/8a2f5d65771414c5b62131aba94c3788.min.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <form id="property-inspector">
+      <div class="sdpi-wrapper">
+        <div class="sdpi-item">
+          <div class="sdpi-item-label">Kimai</div>
+          <button class="sdpi-item-value max30" id="sign-in" type="button">
+            Sign in
+          </button>
+          <button class="sdpi-item-value max30" id="sign-out" type="button">
+            Sign out
+          </button>
+        </div>
+
+        <hr />
+
+        <div class="sdpi-item">
+          <div class="sdpi-item-label">Project</div>
+          <select class="sdpi-item-value select" name="projectId"></select>
+        </div>
+
+        <div class="sdpi-item">
+          <div class="sdpi-item-label">Activity</div>
+          <select class="sdpi-item-value select" name="activityId"></select>
+        </div>
+      </div>
+    </form>
+
+    <!-- Stream Deck Libs -->
+    <script src="../../../libs/js/constants.js"></script>
+    <script src="../../../libs/js/prototypes.js"></script>
+    <script src="../../../libs/js/timers.js"></script>
+    <script src="../../../libs/js/utils.js"></script>
+    <script src="../../../libs/js/events.js"></script>
+    <script src="../../../libs/js/api.js"></script>
+    <script src="../../../libs/js/property-inspector.js"></script>
+    <script src="../../../libs/js/dynamic-styles.js"></script>
+
+    <!-- Property Inspector Source -->
+    <script src="inspector.bundle.js" type="module"></script>
+  </body>
+</html>

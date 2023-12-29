@@ -8,7 +8,7 @@ Adds a button for tracking time on projects or tasks. Displays the time that has
 
 ![Preview](assets/preview.png)
 
-## Installation 
+## Installation
 
 Download the [latest realase](https://github.com/b263/stream-deck-time-tracker/releases/download/0.1.0/dev.b263.time-tracker.streamDeckPlugin).
 

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../libs/css/sdpi.css" />
+    <link rel="stylesheet" href="../../../styles/main.css" />
+    <script
+      src="https://js.sentry-cdn.com/8a2f5d65771414c5b62131aba94c3788.min.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <div class="sdpi-wrapper">
+      <div class="sdpi-heading">Kimai settings</div>
+
+      <div class="wrap">
+        <p>Login with your Kimai user name and API password.</p>
+      </div>
+
+      <div class="sdpi-item">
+        <div class="sdpi-item-label">URL</div>
+        <input type="text" class="sdpi-item-value" id="url" value="" />
+      </div>
+
+      <div class="sdpi-item">
+        <div class="sdpi-item-label">User name</div>
+        <input type="text" class="sdpi-item-value" id="user" value="" />
+      </div>
+
+      <div class="sdpi-item">
+        <div class="sdpi-item-label">API password</div>
+        <input type="password" class="sdpi-item-value" id="password" value="" />
+      </div>
+
+      <div class="sdpi-item">
+        <div class="sdpi-item-label">Sign in</div>
+        <button class="sdpi-item-value" id="login">Sign in</button>
+      </div>
+    </div>
+
+    <script src="external.bundle.js" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+{
+  "name": "dev.b263.time-tracker.sdplugin",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint src",
+    "build": "npm run lint && rollup -c && npm run licenses",
+    "licenses": "generate-license-file --input package.json --output ../dev.b263.time-tracker.sdPlugin/THIRD-PARTY-LICENSES.txt --overwrite && cp ../../LICENSE ../dev.b263.time-tracker.sdPlugin/LICENSE.txt",
+    "dist:version": "node_modules/node-jq/bin/jq '.Version' ../dev.b263.time-tracker.sdPlugin/manifest.json",
+    "dist:dir": "npm run --silent dist:version | tr -d \"\\\"\"",
+    "dist": "npm run build && TARGET=$(npm run --silent dist:dir); cd ../..; mkdir -p dist/$TARGET; ./DistributionTool -b -i ./src/dev.b263.time-tracker.sdPlugin -o dist/$TARGET",
+    "dev": "rollup -c -w",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules npx jest --watch"
+  },
+  "author": "Bastian Bräu",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "date-fns": "^3.0.6",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "eslint": "^8.55.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jest": "^27.6.0",
+    "eslint-plugin-n": "^16.4.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "generate-license-file": "^3.0.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "node-jq": "^4.2.2",
+    "rollup": "^4.9.0"
+  }
+}
