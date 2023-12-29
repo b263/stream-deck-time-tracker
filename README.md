@@ -1,5 +1,7 @@
 # Time tracker plugin for Elgato Stream Deck (v0.2.0)
 
+[![Node.js CI](https://github.com/b263/stream-deck-time-tracker/actions/workflows/node.js.yml/badge.svg)](https://github.com/b263/stream-deck-time-tracker/actions/workflows/node.js.yml)
+
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M3SNODI)
 
 Time tracker using the open source platform [Kimai](https://www.kimai.org/).
