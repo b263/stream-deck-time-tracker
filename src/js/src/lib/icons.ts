@@ -1,4 +1,6 @@
-export const Icons = new Map([
+export type IconKeys = "play" | "pause";
+
+export const Icons = new Map<IconKeys, (data: any) => string>([
   [
     "play",
     ({ workedToday }) => `

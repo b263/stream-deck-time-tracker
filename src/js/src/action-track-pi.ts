@@ -1,17 +1,19 @@
-/// <reference path="../../dev.b263.time-tracker.sdPlugin/libs/js/property-inspector.js" />
-/// <reference path="../../dev.b263.time-tracker.sdPlugin/libs/js/utils.js" />
-
-import { KimaiApi } from "./lib/api/kimai-api.js";
+import { KimaiApi } from "./lib/api/kimai-api";
 import {
   AuthenticationState,
   BackendProvider,
   StateKey,
-} from "./lib/constants.js";
+} from "./lib/constants";
+import { TrackerSettings, TrackerSettingsValue } from "./lib/tracker";
+import { BackendProviders, GlobalSettings } from "./lib/types";
+
+declare const $PI: any;
+declare const Utils: any;
 
 const State = new Map();
 
 $PI.onConnected(
-  ({ actionInfo, appInfo, connection, messageType, port, uuid }) => {
+  ({ actionInfo, appInfo, connection, messageType, port, uuid }: any) => {
     console.log("onConnected", {
       actionInfo,
       appInfo,
@@ -32,11 +34,11 @@ $PI.onConnected(
     $PI.getSettings();
     $PI.getGlobalSettings();
 
-    $PI.onDidReceiveSettings(action, ({ payload: { settings } }) =>
+    $PI.onDidReceiveSettings(action, ({ payload: { settings } }: any) =>
       onSettingsReceived(settings)
     );
 
-    $PI.onDidReceiveGlobalSettings(({ payload: { settings } }) =>
+    $PI.onDidReceiveGlobalSettings(({ payload: { settings } }: any) =>
       onGlobalSettingsReceived(settings)
     );
 
@@ -64,19 +66,19 @@ $PI.onConnected(
   }
 );
 
-document.getElementById("settings").addEventListener("click", () => {
-  const external = window.open("../../../external.html");
+document.getElementById("settings")!.addEventListener("click", () => {
+  const external = window.open("../../../external.html")!;
   external.addEventListener("load", () => {
     external.postMessage(State.get(StateKey.globalSettings));
   });
   State.set(StateKey.externalWindow, external);
 });
 
-async function onSettingsReceived(settings) {
+async function onSettingsReceived(settings: TrackerSettings) {
   State.set(StateKey.settings, settings);
 }
 
-function onGlobalSettingsReceived(settings) {
+function onGlobalSettingsReceived(settings: GlobalSettings) {
   console.log("onGlobalSettingsReceived", settings);
   State.set(StateKey.globalSettings, settings);
   if (
@@ -92,32 +94,32 @@ async function loadProjects() {
   const projectId = State.get(StateKey.settings)?.value?.projectId;
   const options = [
     '<option value="">Select project</option>',
-    ...projects.map((project) => {
+    ...projects.map((project: any) => {
       const selected = projectId == project.id ? "selected" : "";
       return `<option ${selected} value="${project.id}">${project.name}</option>`;
     }),
   ];
-  document.querySelector("[name='projectId']").innerHTML = options.join("");
+  document.querySelector("[name='projectId']")!.innerHTML = options.join("");
   if (typeof projectId === "number") {
     loadActivities(projectId);
   }
 }
 
-async function loadActivities(projectId) {
+async function loadActivities(projectId: number) {
   const activities = await getApi().getActivities(projectId);
   const activityId = State.get(StateKey.settings)?.value?.activityId;
   resetActivityIfNotInProject(activities, activityId);
   const options = [
     '<option value="">Select activity</option>',
-    ...activities.map((activity) => {
+    ...activities.map((activity: any) => {
       const selected = activityId == activity.id ? "selected" : "";
       return `<option ${selected} value="${activity.id}">${activity.name}</option>`;
     }),
   ];
-  document.querySelector("[name='activityId']").innerHTML = options.join("");
+  document.querySelector("[name='activityId']")!.innerHTML = options.join("");
 }
 
-function resetActivityIfNotInProject(activities, activityId) {
+function resetActivityIfNotInProject(activities: any[], activityId: any) {
   if (!activities.map((a) => a.id).includes(+activityId)) {
     const settings = {
       ...(State.get(StateKey.settings)?.value ?? {}),
@@ -157,7 +159,10 @@ async function getFormValue() {
   };
 }
 
-function settingsByProvider(provider, settings) {
+function settingsByProvider(
+  provider: BackendProviders,
+  settings: TrackerSettingsValue
+) {
   switch (provider) {
     case BackendProvider.kimai:
       return {

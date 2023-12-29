@@ -1,9 +1,10 @@
 import { format, startOfToday } from "date-fns";
+import { TrackerSettings, TrackerSettingsValue } from "../tracker";
 
 export class KimaiApi {
-  static instance = null;
+  static instance: KimaiApi | null = null;
 
-  static async getCurrentUser(baseUrl, user, token) {
+  static async getCurrentUser(baseUrl: string, user: string, token: string) {
     const url = `${baseUrl}api/users/me`;
     try {
       const response = await fetch(url, {
@@ -18,11 +19,11 @@ export class KimaiApi {
     }
   }
 
-  #baseUrl;
-  #user;
-  #token;
+  #baseUrl: string | undefined;
+  #user: string | undefined;
+  #token: string | undefined;
 
-  constructor(url, user, token) {
+  constructor(url: string, user: string, token: string) {
     if (KimaiApi.instance) return KimaiApi.instance;
     this.#baseUrl = url;
     this.#user = user;
@@ -37,10 +38,10 @@ export class KimaiApi {
         "X-AUTH-TOKEN": this.#token,
         "Content-Type": "application/json",
       },
-    };
+    } as RequestInit;
   }
 
-  async startTracking({ projectId, activityId }) {
+  async startTracking({ projectId, activityId }: TrackerSettingsValue) {
     const url = `${this.#baseUrl}api/timesheets`;
     const body = {
       begin: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
@@ -56,7 +57,7 @@ export class KimaiApi {
     return response.json();
   }
 
-  async stopTracking(id) {
+  async stopTracking(id: number) {
     const url = `${this.#baseUrl}api/timesheets/${id}/stop`;
     const response = await fetch(url, {
       ...this.fetchOptions,
@@ -71,23 +72,23 @@ export class KimaiApi {
     return response.json();
   }
 
-  async getActivities(projectId) {
+  async getActivities(projectId: number) {
     const params = new URLSearchParams({
-      project: projectId,
+      project: String(projectId),
     });
     const url = `${this.#baseUrl}api/activities?${params.toString()}`;
     const response = await fetch(url, this.fetchOptions);
     return response.json();
   }
 
-  async listTodaysTimeEntries(projectId, activityId) {
+  async listTodaysTimeEntries(projectId: number, activityId: number) {
     if (!projectId || !activityId) {
       return Promise.resolve([]);
     }
     const params = new URLSearchParams({
       begin: format(startOfToday(), "yyyy-MM-dd'T'HH:mm:ss"),
-      "projects[]": projectId,
-      "activities[]": activityId,
+      "projects[]": String(projectId),
+      "activities[]": String(activityId),
     });
     const url = `${this.#baseUrl}api/timesheets?${params.toString()}`;
     const response = await fetch(url, this.fetchOptions);

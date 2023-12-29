@@ -1,55 +1,71 @@
-import { Icons } from "./icons.js";
+import { IconKeys, Icons } from "./icons";
+import { BackendProviders } from "./types";
+
+declare const $SD: any;
 
 export const TrackerEvent = {
   start: "start",
   stop: "stop",
   requestWorkedToday: "requestWorkedToday",
+} as const;
+
+export type TrackerSettingsValue = {
+  projectId: number;
+  activityId: number;
+};
+
+export type TrackerSettings = {
+  backendProvider: BackendProviders;
+  value: TrackerSettingsValue;
 };
 
 export class Tracker extends EventTarget {
-  static instances = new Map();
+  static instances = new Map<string, Tracker>();
 
-  static create(context, running) {
+  static create(context: string, running: boolean) {
     const tracker = new Tracker(context, running);
     Tracker.instances.set(context, tracker);
     tracker.render();
     return tracker;
   }
 
-  static has(context) {
+  static has(context: string) {
     return Tracker.instances.has(context);
   }
 
-  static get(context) {
+  static get(context: string) {
     return Tracker.instances.get(context);
   }
 
-  static pauseOtherTrackers({ context }) {
+  static pauseOtherTrackers({ context }: Tracker) {
     Tracker.instances.forEach((tracker) => {
       if (tracker.context === context) return;
       if (tracker.running === false) return;
-      tracker.stop(false);
+      tracker.stop();
     });
   }
 
-  constructor(context, running) {
+  private startTime: Date | undefined;
+  private context: string | undefined;
+  public running: boolean = false;
+  public workedToday: number | undefined;
+  private interval: number | undefined;
+
+  constructor(context: string, running: boolean) {
     super();
-    this.startTime = null;
     this.context = context;
     this.running = running;
-    this.workedToday = null;
-    this.interval = null;
   }
 
-  #settings = {};
-  set settings(settings) {
+  #settings: TrackerSettings | undefined;
+  public set settings(settings: TrackerSettings) {
     console.log("Tracker set settings", settings);
     this.#settings = settings;
-    if (this.workedToday === null) {
+    if (typeof this.workedToday !== "number") {
       this.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
     }
   }
-  get settings() {
+  public get settings(): TrackerSettings | undefined {
     return this.#settings;
   }
 
@@ -75,38 +91,38 @@ export class Tracker extends EventTarget {
   stop() {
     clearInterval(this.interval);
     this.running = false;
-    this.workedToday += this.timeElapsed;
+    this.workedToday! += this.timeElapsed;
     this.render();
     this.dispatchEvent(new Event(TrackerEvent.stop));
   }
 
   reset() {
-    this.startTime = null;
+    this.startTime = undefined;
   }
 
   render() {
     console.log("Render tracking icon", this);
     if (this.running) {
-      const sum = this.formatTime(this.workedToday + this.timeElapsed);
+      const sum = this.formatTime((this.workedToday ?? 0) + this.timeElapsed);
       const cur = this.formatTime(this.timeElapsed);
       $SD.setImage(this.context, this.getInlineSvg("pause", { sum, cur }));
     } else {
       $SD.setImage(
         this.context,
         this.getInlineSvg("play", {
-          workedToday: this.formatTime(this.workedToday),
+          workedToday: this.formatTime(this.workedToday ?? 0),
         })
       );
     }
   }
 
-  getInlineSvg(key, data) {
-    return `data:image/svg+xml;charset=utf8,${Icons.get(key)(data)}`;
+  getInlineSvg(key: IconKeys, data: any) {
+    return `data:image/svg+xml;charset=utf8,${Icons.get(key)!(data)}`;
   }
 
-  formatTime(time) {
+  formatTime(time: number) {
     const hrs = Math.floor(time / 3_600);
-    let min = Math.floor(time / 60) % 60;
+    let min: number | string = Math.floor(time / 60) % 60;
     if (min < 10) {
       min = `0${min}`;
     }

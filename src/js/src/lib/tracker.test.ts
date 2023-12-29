@@ -1,11 +1,11 @@
 import { Icons } from "./icons";
-import { Tracker, TrackerEvent } from "./tracker.js";
-import jest from "jest-mock";
+import { Tracker, TrackerEvent } from "./tracker";
+import { jest } from "@jest/globals";
 
 describe("tracker", () => {
   beforeEach(() => {
     Tracker.instances.clear();
-    global.$SD = {
+    (global as any).$SD = {
       setImage: jest.fn(),
     };
     jest
@@ -21,13 +21,13 @@ describe("tracker", () => {
   test("Tracker instances are added to the static Map", () => {
     Tracker.create("ctx", false);
     expect(Tracker.instances.size).toBe(1);
-    expect(Tracker.instances.get("ctx").context).toBe("ctx");
+    expect((Tracker.instances.get("ctx") as any).context).toBe("ctx");
   });
 
   test("Tracker is rendering upon creation", () => {
     Tracker.create("ctx", false);
-    expect(global.$SD.setImage).toHaveBeenCalledTimes(1);
-    expect(global.$SD.setImage).toHaveBeenCalledWith(
+    expect((global as any).$SD.setImage).toHaveBeenCalledTimes(1);
+    expect((global as any).$SD.setImage).toHaveBeenCalledWith(
       "ctx",
       'data:image/svg+xml;charset=utf8,play:{"workedToday":"0:00"}'
     );
@@ -35,8 +35,8 @@ describe("tracker", () => {
 
   test("Tracker is rendering as started upon creation", () => {
     Tracker.create("ctx", true);
-    expect(global.$SD.setImage).toHaveBeenCalledTimes(1);
-    expect(global.$SD.setImage).toHaveBeenCalledWith(
+    expect((global as any).$SD.setImage).toHaveBeenCalledTimes(1);
+    expect((global as any).$SD.setImage).toHaveBeenCalledWith(
       "ctx",
       'data:image/svg+xml;charset=utf8,pause:{"sum":"0:00","cur":"0:00"}'
     );
@@ -45,7 +45,10 @@ describe("tracker", () => {
   test("When setting settings, todays worked hours should be requested", () => {
     const spy = jest.spyOn(Tracker.prototype, "dispatchEvent");
     const tracker = Tracker.create("ctx", false);
-    tracker.settings = {};
+    tracker.settings = {
+      backendProvider: "kimai",
+      value: { projectId: 0, activityId: 0 },
+    };
     expect(spy).toHaveBeenCalledWith(
       expect.objectContaining({
         type: TrackerEvent.requestWorkedToday,

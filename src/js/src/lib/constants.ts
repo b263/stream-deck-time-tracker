@@ -1,16 +1,16 @@
-export const StateKey = Object.freeze({
+export const StateKey = {
   currentEvent: "currentEvent",
   settings: "settings",
   globalSettings: "globalSettings",
   externalWindow: "externalWindow",
-});
+} as const;
 
-export const BackendProvider = Object.freeze({
+export const BackendProvider = {
   kimai: "kimai",
-});
+} as const;
 
-export const AuthenticationState = Object.freeze({
+export const AuthenticationState = {
   none: "none",
   loggedIn: "loggedIn",
   error: "error",
-});
+} as const;
