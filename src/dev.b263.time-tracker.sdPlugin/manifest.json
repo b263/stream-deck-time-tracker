@@ -5,7 +5,7 @@
   "Description": "Time tracker using the Tracking Time platform. Requires a free account.",
   "Icon": "assets/category",
   "URL": "https://github.com/b263/stream-deck-time-tracker/issues",
-  "Version": "0.1.0",
+  "Version": "0.2.0",
   "CodePath": "app.html",
   "Software": {
     "MinimumVersion": "5.0"
