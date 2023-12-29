@@ -6,6 +6,8 @@ Time tracker using the open source platform [Kimai](https://www.kimai.org/).
 
 Kimai can be [self-hosted](https://www.kimai.org/documentation/chapter-on-premise.html) or used as a service, that also offers a [free plan](https://www.kimai.cloud/start-trial).
 
+![Preview](assets/preview.png)
+
 ## How it works
 
 Adds a button for tracking time on projects or tasks. Displays the time that has been tracked today and on the current time period.
@@ -15,8 +17,6 @@ Adds a button for tracking time on projects or tasks. Displays the time that has
 You need to have at lease one project and one activity set up in Kimai.
 
 In the plugin you provide your credentials and select the project and activity on which time should be tracked.
-
-![Preview](assets/preview.png)
 
 ## Installation
 
