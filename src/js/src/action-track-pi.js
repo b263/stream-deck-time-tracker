@@ -2,7 +2,11 @@
 /// <reference path="../../dev.b263.time-tracker.sdPlugin/libs/js/utils.js" />
 
 import { KimaiApi } from "./lib/api/kimai-api.js";
-import { BackendProvider, StateKey } from "./lib/constants.js";
+import {
+  AuthenticationState,
+  BackendProvider,
+  StateKey,
+} from "./lib/constants.js";
 
 const State = new Map();
 
@@ -60,19 +64,12 @@ $PI.onConnected(
   }
 );
 
-document.getElementById("sign-in").addEventListener("click", () => {
-  State.set(StateKey.externalWindow, window.open("./external.html"));
-});
-
-document.getElementById("sign-out").addEventListener("click", () => {
-  const globalSettings = {
-    ...State.get(StateKey.globalSettings),
-    backendProviderConfig: {
-      [BackendProvider.kimai]: null,
-    },
-  };
-  $PI.setGlobalSettings(globalSettings);
-  $PI.getGlobalSettings();
+document.getElementById("settings").addEventListener("click", () => {
+  const external = window.open("../../../external.html");
+  external.addEventListener("load", () => {
+    external.postMessage(State.get(StateKey.globalSettings));
+  });
+  State.set(StateKey.externalWindow, external);
 });
 
 async function onSettingsReceived(settings) {
@@ -82,13 +79,11 @@ async function onSettingsReceived(settings) {
 function onGlobalSettingsReceived(settings) {
   console.log("onGlobalSettingsReceived", settings);
   State.set(StateKey.globalSettings, settings);
-  if (settings.backendProviderConfig?.[BackendProvider.kimai]) {
-    document.getElementById("sign-in").style.display = "none";
-    document.getElementById("sign-out").style.display = "block";
+  if (
+    settings.backendProviderConfig?.[BackendProvider.kimai]
+      ?.authenticationState === AuthenticationState.loggedIn
+  ) {
     loadProjects();
-  } else {
-    document.getElementById("sign-in").style.display = "block";
-    document.getElementById("sign-out").style.display = "none";
   }
 }
 
@@ -177,14 +172,6 @@ function settingsByProvider(provider, settings) {
 window.addEventListener("message", ({ data }) => {
   State.get(StateKey.externalWindow)?.close();
   State.set(StateKey.externalWindow, null);
-  const state = State.get(StateKey.globalSettings);
-  const globalSettings = {
-    ...(state ?? {}),
-    backendProviderConfig: {
-      ...(state?.backendProviderConfig ?? {}),
-      [BackendProvider.kimai]: data,
-    },
-  };
-  $PI.setGlobalSettings(globalSettings);
+  $PI.setGlobalSettings(data);
   $PI.getGlobalSettings();
 });

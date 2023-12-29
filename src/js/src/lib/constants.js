@@ -8,3 +8,9 @@ export const StateKey = Object.freeze({
 export const BackendProvider = Object.freeze({
   kimai: "kimai",
 });
+
+export const AuthenticationState = Object.freeze({
+  none: "none",
+  loggedIn: "loggedIn",
+  error: "error",
+});

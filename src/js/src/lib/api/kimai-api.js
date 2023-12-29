@@ -3,15 +3,19 @@ import { format, startOfToday } from "date-fns";
 export class KimaiApi {
   static instance = null;
 
-  static async ping(baseUrl, user, token) {
-    const url = `${baseUrl}api/ping`;
-    const response = await fetch(url, {
-      headers: {
-        "X-AUTH-USER": user,
-        "X-AUTH-TOKEN": token,
-      },
-    });
-    return response.json();
+  static async getCurrentUser(baseUrl, user, token) {
+    const url = `${baseUrl}api/users/me`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "X-AUTH-USER": user,
+          "X-AUTH-TOKEN": token,
+        },
+      });
+      return response.json();
+    } catch (e) {
+      return Promise.resolve(null);
+    }
   }
 
   #baseUrl;

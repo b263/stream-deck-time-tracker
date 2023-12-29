@@ -13,10 +13,7 @@ function config([input, file]) {
 
 export default [
   ["./src/app.js", "../dev.b263.time-tracker.sdPlugin/app.bundle.js"],
-  [
-    "./src/action-track-external.js",
-    "../dev.b263.time-tracker.sdPlugin/actions/track/property-inspector/external.bundle.js",
-  ],
+  ["./src/external.js", "../dev.b263.time-tracker.sdPlugin/external.bundle.js"],
   [
     "./src/action-track-pi.js",
     "../dev.b263.time-tracker.sdPlugin/actions/track/property-inspector/inspector.bundle.js",
