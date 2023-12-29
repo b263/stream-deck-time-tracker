@@ -23,6 +23,6 @@ In the plugin you provide your credentials and select the project and activity o
 
 ## Installation
 
-Download the [latest realase](https://github.com/b263/stream-deck-time-tracker/releases/download/0.1.0/dev.b263.time-tracker.streamDeckPlugin).
+Download the [latest realase](https://github.com/b263/stream-deck-time-tracker/releases/download/0.2.0/dev.b263.time-tracker.streamDeckPlugin).
 
 Double-click the downloaded file to add it to Stream Deck.
