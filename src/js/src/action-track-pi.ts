@@ -24,11 +24,9 @@ $PI.onConnected(
     });
 
     const {
-      // eslint-disable-next-line no-unused-vars
-      payload: { settings },
+      payload: { settings }, // eslint-disable-line
       action,
-      // eslint-disable-next-line no-unused-vars
-      context,
+      context, // eslint-disable-line
     } = actionInfo;
 
     $PI.getSettings();
