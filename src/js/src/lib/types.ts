@@ -1,3 +1,4 @@
+import { TrackingItem } from "./api/api";
 import { AuthenticationState } from "./constants";
 
 export type BackendProviders = "kimai";
@@ -20,6 +21,6 @@ export type GlobalSettings = {
 
 export type AppState = {
   externalWindow: any;
-  currentEvent: any;
+  currentEvent: TrackingItem;
   globalSettings: GlobalSettings;
 };

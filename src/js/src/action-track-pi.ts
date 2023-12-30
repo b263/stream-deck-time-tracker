@@ -90,11 +90,16 @@ function onGlobalSettingsReceived(settings: GlobalSettings) {
 }
 
 async function loadProjects() {
-  const projects = await getApi().getProjects();
+  const response = await getApi().getProjects();
+  if (!response.success) {
+    console.error("Could not load projects");
+    return;
+  }
+  const projects = response.body;
   const projectId = State.get(StateKey.settings)?.value?.projectId;
   const options = [
     '<option value="">Select project</option>',
-    ...projects.map((project: any) => {
+    ...projects.map((project) => {
       const selected = projectId == project.id ? "selected" : "";
       return `<option ${selected} value="${project.id}">${project.name}</option>`;
     }),
@@ -106,12 +111,17 @@ async function loadProjects() {
 }
 
 async function loadActivities(projectId: number) {
-  const activities = await getApi().getActivities(projectId);
+  const response = await getApi().getActivities(projectId);
+  if (!response.success) {
+    console.error("Could not load activities");
+    return;
+  }
+  const activities = response.body;
   const activityId = State.get(StateKey.settings)?.value?.activityId;
   resetActivityIfNotInProject(activities, activityId);
   const options = [
     '<option value="">Select activity</option>',
-    ...activities.map((activity: any) => {
+    ...activities.map((activity) => {
       const selected = activityId == activity.id ? "selected" : "";
       return `<option ${selected} value="${activity.id}">${activity.name}</option>`;
     }),
