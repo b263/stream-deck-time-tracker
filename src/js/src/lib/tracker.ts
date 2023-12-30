@@ -43,7 +43,7 @@ export class Tracker extends EventTarget {
   }
 
   private startTime: Date | undefined;
-  private context: string;
+  public readonly context: string;
   public running: boolean = false;
   public workedToday: number | undefined;
   private interval: number | undefined;
