@@ -22,7 +22,6 @@ function config([input, file]) {
         org: "b263",
         project: "stream-deck-time-tracker",
         telemetry: false,
-        disable: true,
       }),
     ],
   };

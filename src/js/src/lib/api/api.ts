@@ -23,7 +23,7 @@ export type Category = {
 
 export async function tryFetch<T>(
   url: string,
-  options: RequestInit
+  options: RequestInit // eslint-disable-line
 ): Promise<ApiResponse<T>> {
   try {
     const response = await fetch(url, options);

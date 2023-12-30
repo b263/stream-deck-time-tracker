@@ -1,5 +1,5 @@
 import { format, startOfToday } from "date-fns";
-import { TrackerSettings, TrackerSettingsValue } from "../tracker";
+import { TrackerSettingsValue } from "../tracker";
 import {
   ApiResponse,
   Category,
@@ -45,7 +45,7 @@ export class KimaiApi {
         "X-AUTH-TOKEN": this.#token,
         "Content-Type": "application/json",
       },
-    } as RequestInit;
+    } as RequestInit; // eslint-disable-line
   }
 
   async startTracking({

@@ -6,6 +6,8 @@ module.exports = {
   },
   extends: [
     "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
     "google",
     "prettier",
     "plugin:jest/recommended",
@@ -21,7 +23,9 @@ module.exports = {
       },
     },
   ],
-  ignorePatterns: ["node_modules", "libs"],
+  ignorePatterns: ["node_modules", "libs", "*.d.ts"],
+  plugins: ["@typescript-eslint", "jest"],
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaVersion: "latest",
     sourceType: "module",
@@ -30,6 +34,7 @@ module.exports = {
     "no-undef": 2,
     "require-jsdoc": 0,
     "spaced-comment": 0,
+    "@typescript-eslint/no-explicit-any": "off",
   },
   globals: {
     global: true,
@@ -38,5 +43,4 @@ module.exports = {
     Action: true,
     Utils: true,
   },
-  plugins: ["jest"],
 };
