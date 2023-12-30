@@ -37,8 +37,7 @@ export class Tracker extends EventTarget {
 
   static pauseOtherTrackers({ context }: Tracker) {
     Tracker.instances.forEach((tracker) => {
-      if (tracker.context === context) return;
-      if (tracker.running === false) return;
+      if (tracker.context === context || tracker.running === false) return;
       tracker.stop();
     });
   }
