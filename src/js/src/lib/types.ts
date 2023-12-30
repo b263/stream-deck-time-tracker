@@ -22,5 +22,4 @@ export type AppState = {
   externalWindow: any;
   currentEvent: any;
   globalSettings: GlobalSettings;
-  settings: any;
 };

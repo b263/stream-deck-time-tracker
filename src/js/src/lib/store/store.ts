@@ -6,6 +6,10 @@ export class Store<T> {
   #state = new BehaviorSubject<T | null>(null);
   state$ = this.#state.pipe(filter((state) => !!state));
 
+  constructor() {
+    console.log("Store.constructor()");
+  }
+
   setState(newState: T | StateMutator<T>) {
     console.log("Store.setState()", {
       current: this.#state.value,

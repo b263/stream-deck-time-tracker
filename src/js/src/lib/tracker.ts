@@ -1,8 +1,6 @@
 import { IconKeys, Icons } from "./icons";
 import { BackendProviders } from "./types";
 
-declare const $SD: any;
-
 export const TrackerEvent = {
   start: "start",
   stop: "stop",
@@ -46,12 +44,13 @@ export class Tracker extends EventTarget {
   }
 
   private startTime: Date | undefined;
-  private context: string | undefined;
+  private context: string;
   public running: boolean = false;
   public workedToday: number | undefined;
   private interval: number | undefined;
 
   constructor(context: string, running: boolean) {
+    console.log("Tracker.constructor(context, running)", { context, running });
     super();
     this.context = context;
     this.running = running;
