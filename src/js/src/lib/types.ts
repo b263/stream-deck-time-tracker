@@ -8,7 +8,7 @@ export type BackendProviderConfig = {
     url: string;
     user: string;
     password: string;
-    userId?: number;
+    userId?: number; // TODO: Currently unused. Remove?
     authenticationState?: (typeof AuthenticationState)[keyof typeof AuthenticationState];
   };
 };
