@@ -1,7 +1,7 @@
 # Time tracker plugin for Elgato Stream Deck (v0.3.0)
 
-![Last commit](https://img.shields.io/github/last-commit/b263/stream-deck-time-tracker/main)
-[![Unit tests](https://github.com/b263/stream-deck-time-tracker/actions/workflows/node.js.yml/badge.svg)](https://github.com/b263/stream-deck-time-tracker/actions/workflows/node.js.yml)
+[![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/b263/stream-deck-time-tracker/latest/total?style=for-the-badge&label=Download)](https://github.com/b263/stream-deck-time-tracker/releases/latest/download/dev.b263.time-tracker.streamDeckPlugin)
+![Last commit](https://img.shields.io/github/last-commit/b263/stream-deck-time-tracker/main?style=for-the-badge)
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M3SNODI)
 
@@ -23,6 +23,6 @@ In the plugin you provide your credentials and select the project and activity o
 
 ## Installation
 
-Download the [latest realase](https://github.com/b263/stream-deck-time-tracker/releases/download/0.3.0/dev.b263.time-tracker.streamDeckPlugin).
+Download the [latest realase](https://github.com/b263/stream-deck-time-tracker/releases/latest/download/dev.b263.time-tracker.streamDeckPlugin).
 
 Double-click the downloaded file to add it to Stream Deck.
