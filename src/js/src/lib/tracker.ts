@@ -92,6 +92,7 @@ export class Tracker extends EventTarget {
     this.workedToday! += this.timeElapsed;
     this.render();
     this.dispatchEvent(new Event(TrackerEvent.stop));
+    this.dispatchEvent(new Event(TrackerEvent.requestWorkedToday)); // Prevent inconsistencies between local and persisted data
   }
 
   reset() {
