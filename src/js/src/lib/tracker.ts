@@ -1,8 +1,6 @@
 import { IconKeys, Icons } from "./icons";
 import { BackendProviders } from "./types";
 
-declare const $SD: any;
-
 export const TrackerEvent = {
   start: "start",
   stop: "stop",
@@ -39,19 +37,19 @@ export class Tracker extends EventTarget {
 
   static pauseOtherTrackers({ context }: Tracker) {
     Tracker.instances.forEach((tracker) => {
-      if (tracker.context === context) return;
-      if (tracker.running === false) return;
+      if (tracker.context === context || tracker.running === false) return;
       tracker.stop();
     });
   }
 
   private startTime: Date | undefined;
-  private context: string | undefined;
+  private context: string;
   public running: boolean = false;
   public workedToday: number | undefined;
   private interval: number | undefined;
 
   constructor(context: string, running: boolean) {
+    console.log("Tracker.constructor(context, running)", { context, running });
     super();
     this.context = context;
     this.running = running;
@@ -94,6 +92,7 @@ export class Tracker extends EventTarget {
     this.workedToday! += this.timeElapsed;
     this.render();
     this.dispatchEvent(new Event(TrackerEvent.stop));
+    this.dispatchEvent(new Event(TrackerEvent.requestWorkedToday)); // Prevent inconsistencies between local and persisted data
   }
 
   reset() {

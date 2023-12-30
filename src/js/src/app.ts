@@ -1,12 +1,9 @@
-import { Store } from "./lib/store/store";
-import { StateKey, BackendProvider } from "./lib/constants";
-import { Tracker } from "./lib/tracker";
 import { KimaiApi } from "./lib/api/kimai-api";
 import { KimaiApiTrackerConnector } from "./lib/api/kimai-api-tracker-connector";
-import { AppState, GlobalSettings } from "./lib/types";
-
-declare const $SD: any;
-declare const Action: any;
+import { BackendProvider, StateKey } from "./lib/constants";
+import { Store } from "./lib/store/store";
+import { Tracker } from "./lib/tracker";
+import { AppState } from "./lib/types";
 
 /**
  * GLOBAL STATE
@@ -14,17 +11,21 @@ declare const Action: any;
 
 const store = new Store<AppState>();
 
-// /**
-//  * MAIN
-//  */
+/**
+ * MAIN
+ */
 
 $SD.onConnected(() => {
   $SD.getGlobalSettings();
-  $SD.onDidReceiveGlobalSettings(({ payload: { settings } }: any) =>
-    store.patchState({
+  $SD.onDidReceiveGlobalSettings((event: any) => {
+    console.log("$SD.onDidReceiveGlobalSettings(event)", { event });
+    const {
+      payload: { settings },
+    } = event;
+    void store.patchState({
       [StateKey.globalSettings]: settings,
-    })
-  );
+    });
+  });
 });
 
 /**

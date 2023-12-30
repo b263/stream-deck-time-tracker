@@ -22,6 +22,7 @@ function config([input, file]) {
         org: "b263",
         project: "stream-deck-time-tracker",
         telemetry: false,
+        disable: true,
       }),
     ],
   };
@@ -38,4 +39,4 @@ export default [
     "./src/action-report-pi.ts",
     "../dev.b263.time-tracker.sdPlugin/actions/report/property-inspector/inspector.bundle.js",
   ],
-].map((_) => config(_));
+].map(config);

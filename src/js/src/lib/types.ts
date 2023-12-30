@@ -1,3 +1,4 @@
+import { TrackingItem } from "./api/api";
 import { AuthenticationState } from "./constants";
 
 export type BackendProviders = "kimai";
@@ -7,7 +8,7 @@ export type BackendProviderConfig = {
     url: string;
     user: string;
     password: string;
-    userId?: number;
+    userId?: number; // TODO: Currently unused. Remove?
     authenticationState?: (typeof AuthenticationState)[keyof typeof AuthenticationState];
   };
 };
@@ -20,7 +21,6 @@ export type GlobalSettings = {
 
 export type AppState = {
   externalWindow: any;
-  currentEvent: any;
+  currentEvent: TrackingItem;
   globalSettings: GlobalSettings;
-  settings: any;
 };

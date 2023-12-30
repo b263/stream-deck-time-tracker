@@ -1,5 +1,12 @@
 import { format, startOfToday } from "date-fns";
 import { TrackerSettings, TrackerSettingsValue } from "../tracker";
+import {
+  ApiResponse,
+  Category,
+  TimeEntry,
+  TrackingItem,
+  tryFetch,
+} from "./api";
 
 export class KimaiApi {
   static instance: KimaiApi | null = null;
@@ -41,7 +48,10 @@ export class KimaiApi {
     } as RequestInit;
   }
 
-  async startTracking({ projectId, activityId }: TrackerSettingsValue) {
+  async startTracking({
+    projectId,
+    activityId,
+  }: TrackerSettingsValue): Promise<ApiResponse<TrackingItem>> {
     const url = `${this.#baseUrl}api/timesheets`;
     const body = {
       begin: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
@@ -49,27 +59,26 @@ export class KimaiApi {
       activity: activityId,
       description: "",
     };
-    const response = await fetch(url, {
+    const options = {
       ...this.fetchOptions,
       method: "POST",
       body: JSON.stringify(body),
-    });
-    return response.json();
+    };
+    return tryFetch<TrackingItem>(url, options);
   }
 
   async stopTracking(id: number) {
     const url = `${this.#baseUrl}api/timesheets/${id}/stop`;
-    const response = await fetch(url, {
+    const options = {
       ...this.fetchOptions,
       method: "PATCH",
-    });
-    return response.json();
+    };
+    return tryFetch<any>(url, options);
   }
 
   async getProjects() {
     const url = `${this.#baseUrl}api/projects`;
-    const response = await fetch(url, this.fetchOptions);
-    return response.json();
+    return tryFetch<Category[]>(url, this.fetchOptions);
   }
 
   async getActivities(projectId: number) {
@@ -77,13 +86,20 @@ export class KimaiApi {
       project: String(projectId),
     });
     const url = `${this.#baseUrl}api/activities?${params.toString()}`;
-    const response = await fetch(url, this.fetchOptions);
-    return response.json();
+    return tryFetch<Category[]>(url, this.fetchOptions);
   }
 
-  async listTodaysTimeEntries(projectId: number, activityId: number) {
+  async listTodaysTimeEntries(
+    projectId: number,
+    activityId: number
+  ): Promise<ApiResponse<TimeEntry[]>> {
     if (!projectId || !activityId) {
-      return Promise.resolve([]);
+      return {
+        success: false,
+        error: `projectId and activityId must be defined. Current values: ${JSON.stringify(
+          { projectId, activityId }
+        )}`,
+      };
     }
     const params = new URLSearchParams({
       begin: format(startOfToday(), "yyyy-MM-dd'T'HH:mm:ss"),
@@ -91,7 +107,6 @@ export class KimaiApi {
       "activities[]": String(activityId),
     });
     const url = `${this.#baseUrl}api/timesheets?${params.toString()}`;
-    const response = await fetch(url, this.fetchOptions);
-    return response.json();
+    return tryFetch<TimeEntry[]>(url, this.fetchOptions);
   }
 }

@@ -6,6 +6,10 @@ export class Store<T> {
   #state = new BehaviorSubject<T | null>(null);
   state$ = this.#state.pipe(filter((state) => !!state));
 
+  constructor() {
+    console.log("Store.constructor()");
+  }
+
   setState(newState: T | StateMutator<T>) {
     console.log("Store.setState()", {
       current: this.#state.value,
@@ -34,11 +38,11 @@ export class Store<T> {
     return this.state$.pipe(map(selector as (state: any) => any));
   }
 
-  once(key: keyof T) {
+  once<K extends keyof T>(key: K) {
     return firstValueFrom(
       this.state$.pipe(
         filter((state) => !!state),
-        map((state) => state?.[key])
+        map((state) => state![key])
       )
     );
   }

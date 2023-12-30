@@ -1,6 +1,6 @@
 {
   "name": "dev.b263.time-tracker.sdplugin",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "type": "module",
@@ -13,7 +13,8 @@
     "dist": "npm run build && TARGET=$(npm run --silent dist:dir); cd ../..; mkdir -p dist/$TARGET; ./DistributionTool -b -i ./src/dev.b263.time-tracker.sdPlugin -o dist/$TARGET",
     "dev": "rollup -c -w",
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
-    "test:watch": "NODE_OPTIONS=--experimental-vm-modules npx jest --watch"
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules npx jest --watch",
+    "lib:types": "npx -p typescript tsc ../dev.b263.time-tracker.sdPlugin/libs/**/*.js --declaration --allowJs --emitDeclarationOnly --outDir src/types"
   },
   "author": "Bastian Bräu",
   "license": "UNLICENSED",

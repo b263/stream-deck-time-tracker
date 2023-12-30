@@ -1,8 +1,8 @@
-import { Tracker, TrackerEvent, TrackerSettingsValue } from "../tracker";
 import { StateKey } from "../constants";
-import { KimaiApi } from "./kimai-api";
 import { Store } from "../store/store";
+import { Tracker, TrackerEvent, TrackerSettingsValue } from "../tracker";
 import { AppState } from "../types";
+import { KimaiApi } from "./kimai-api";
 
 export class KimaiApiTrackerConnector {
   #api: KimaiApi;
@@ -16,8 +16,12 @@ export class KimaiApiTrackerConnector {
   connect(tracker: Tracker) {
     tracker.addEventListener(TrackerEvent.start, async () => {
       const response = await this.#api.startTracking(this.settings(tracker)!);
+      if (!response.success) {
+        console.error("Could not start tracking");
+        return;
+      }
       this.#store.patchState({
-        [StateKey.currentEvent]: response,
+        [StateKey.currentEvent]: response.body,
       });
     });
 
@@ -45,11 +49,12 @@ export class KimaiApiTrackerConnector {
   }
 
   async getWorkedToday({ projectId, activityId }: TrackerSettingsValue) {
-    // TODO: Filter for current user
-    // const { userId } = await this.#store.once(StateKey.globalSettings);
     const result = await this.#api.listTodaysTimeEntries(projectId, activityId);
+    if (!result.success) {
+      return 0;
+    }
     console.log("getWorkedToday", result, projectId, activityId);
-    return result.reduce(
+    return result.body.reduce(
       (acc: number, item: { duration: number }) => acc + item.duration,
       0
     );
