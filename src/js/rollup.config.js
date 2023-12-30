@@ -27,15 +27,18 @@ function config([input, file]) {
   };
 }
 
+const src = "./src";
+const target = "../dev.b263.time-tracker.sdPlugin";
+
 export default [
-  ["./src/app.ts", "../dev.b263.time-tracker.sdPlugin/app.bundle.js"],
-  ["./src/external.ts", "../dev.b263.time-tracker.sdPlugin/external.bundle.js"],
+  [`${src}/app.ts`, `${target}/app.bundle.js`],
+  [`${src}/external.ts`, `${target}/external.bundle.js`],
   [
-    "./src/action-track-pi.ts",
-    "../dev.b263.time-tracker.sdPlugin/actions/track/property-inspector/inspector.bundle.js",
+    `${src}/action-track-pi.ts`,
+    `${target}/actions/track/property-inspector/inspector.bundle.js`,
   ],
   [
-    "./src/action-report-pi.ts",
-    "../dev.b263.time-tracker.sdPlugin/actions/report/property-inspector/inspector.bundle.js",
+    `${src}/action-report-pi.ts`,
+    `${target}/actions/report/property-inspector/inspector.bundle.js`,
   ],
 ].map(config);
