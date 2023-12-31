@@ -1,6 +1,6 @@
 export default {
   transform: { "^.+\\.ts?$": "ts-jest" },
-  testEnvironment: "node",
+  testEnvironment: "jsdom",
   testRegex: "\\.test\\.ts$",
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 };

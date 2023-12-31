@@ -43,7 +43,7 @@ export class Tracker extends EventTarget {
   }
 
   private startTime: Date | undefined;
-  private context: string;
+  public readonly context: string;
   public running: boolean = false;
   public workedToday: number | undefined;
   private interval: number | undefined;
@@ -92,7 +92,6 @@ export class Tracker extends EventTarget {
     this.workedToday! += this.timeElapsed;
     this.render();
     this.dispatchEvent(new Event(TrackerEvent.stop));
-    this.dispatchEvent(new Event(TrackerEvent.requestWorkedToday)); // Prevent inconsistencies between local and persisted data
   }
 
   reset() {
