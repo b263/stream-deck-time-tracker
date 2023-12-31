@@ -29,6 +29,7 @@ export class KimaiApiTrackerConnector {
       const event = await this.#store.once(StateKey.currentEvent);
       if (typeof event?.id === "number") {
         await this.#api.stopTracking(event?.id);
+        tracker.dispatchEvent(new Event(TrackerEvent.requestWorkedToday)); // Prevent inconsistencies between local and persisted data
       } else {
         throw new Error("Cannot stop tracker. ID is undefined");
       }

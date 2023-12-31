@@ -2,6 +2,8 @@ import nodeResolve from "@rollup/plugin-node-resolve";
 import { sentryRollupPlugin } from "@sentry/rollup-plugin";
 import typescript from "@rollup/plugin-typescript";
 
+const disableSentry = process.env.BUILD_TARGET !== "production";
+
 function config([input, file]) {
   return {
     input,
@@ -22,6 +24,7 @@ function config([input, file]) {
         org: "b263",
         project: "stream-deck-time-tracker",
         telemetry: false,
+        disable: disableSentry,
       }),
     ],
   };
