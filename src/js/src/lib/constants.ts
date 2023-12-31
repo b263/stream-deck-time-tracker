@@ -14,3 +14,8 @@ export const AuthenticationState = {
   loggedIn: "loggedIn",
   error: "error",
 } as const;
+
+export const AppEvent = {
+  actionSuccess: "actionSuccess",
+  actionAlert: "actionAlert",
+} as const;

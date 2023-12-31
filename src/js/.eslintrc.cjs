@@ -42,5 +42,6 @@ module.exports = {
     $PI: true,
     Action: true,
     Utils: true,
+    EventEmitter: true,
   },
 };

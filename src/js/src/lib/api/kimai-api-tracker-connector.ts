@@ -1,4 +1,4 @@
-import { StateKey } from "../constants";
+import { AppEvent, StateKey } from "../constants";
 import { Store } from "../store/store";
 import { Tracker, TrackerEvent, TrackerSettingsValue } from "../tracker";
 import { AppState } from "../types";
@@ -17,9 +17,11 @@ export class KimaiApiTrackerConnector {
     tracker.addEventListener(TrackerEvent.start, async () => {
       const response = await this.#api.startTracking(this.settings(tracker)!);
       if (!response.success) {
+        EventEmitter.emit(AppEvent.actionAlert, tracker.context);
         console.error("Could not start tracking");
         return;
       }
+      EventEmitter.emit(AppEvent.actionSuccess, tracker.context);
       this.#store.patchState({
         [StateKey.currentEvent]: response.body,
       });
@@ -28,7 +30,13 @@ export class KimaiApiTrackerConnector {
     tracker.addEventListener(TrackerEvent.stop, async () => {
       const event = await this.#store.once(StateKey.currentEvent);
       if (typeof event?.id === "number") {
-        await this.#api.stopTracking(event?.id);
+        const response = await this.#api.stopTracking(event?.id);
+        if (!response.success) {
+          EventEmitter.emit(AppEvent.actionAlert, tracker.context);
+          console.error("Could not stop tracking");
+          return;
+        }
+        EventEmitter.emit(AppEvent.actionSuccess, tracker.context);
         tracker.dispatchEvent(new Event(TrackerEvent.requestWorkedToday)); // Prevent inconsistencies between local and persisted data
       } else {
         throw new Error("Cannot stop tracker. ID is undefined");
@@ -54,7 +62,6 @@ export class KimaiApiTrackerConnector {
     if (!result.success) {
       return 0;
     }
-    console.log("getWorkedToday", result, projectId, activityId);
     return result.body.reduce(
       (acc: number, item: { duration: number }) => acc + item.duration,
       0
