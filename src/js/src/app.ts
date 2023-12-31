@@ -1,21 +1,25 @@
 import { initTrackerAction } from "./lib/action/tracker-action";
-import { AppEvent, StateKey } from "./lib/constants";
+import { KimaiApi } from "./lib/api/kimai-api";
+import { AppEvent, BackendProvider, StateKey } from "./lib/constants";
 import { Store } from "./lib/store/store";
-import { AppState } from "./lib/types";
+import { AppState, GlobalSettings } from "./lib/types";
 
 const store = Store.get<AppState>();
 
 $SD.onConnected(() => {
   $SD.getGlobalSettings();
-  $SD.onDidReceiveGlobalSettings((event: any) => {
-    console.log("$SD.onDidReceiveGlobalSettings(event)", { event });
-    const {
-      payload: { settings },
-    } = event;
-    void store.patchState({
-      [StateKey.globalSettings]: settings,
-    });
-  });
+  $SD.onDidReceiveGlobalSettings(
+    (event: { payload: { settings: GlobalSettings } }) => {
+      console.log("$SD.onDidReceiveGlobalSettings(event)", { event });
+      const {
+        payload: { settings },
+      } = event;
+      store.patchState({
+        [StateKey.globalSettings]: settings,
+      });
+      KimaiApi.config(settings.backendProviderConfig[BackendProvider.kimai]);
+    }
+  );
 });
 
 EventEmitter.on(AppEvent.actionSuccess, (context: string) =>

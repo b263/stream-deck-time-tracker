@@ -11,20 +11,21 @@ window.addEventListener("message", ({ data }) => {
     settings?.backendProviderConfig?.[BackendProvider.kimai]?.url ?? "";
   document.querySelector<HTMLInputElement>("#user")!.value =
     settings?.backendProviderConfig?.[BackendProvider.kimai]?.user ?? "";
-  document.querySelector<HTMLInputElement>("#password")!.value =
-    settings?.backendProviderConfig?.[BackendProvider.kimai]?.password ?? "";
+  document.querySelector<HTMLInputElement>("#token")!.value =
+    settings?.backendProviderConfig?.[BackendProvider.kimai]?.token ?? "";
 
   updateState();
 });
 
 document.querySelector("#login")!.addEventListener("click", async () => {
   const url =
-    document.querySelector<HTMLInputElement>("#url")!.value.replace(/\/$/, "") +
-    "/";
+    document
+      .querySelector<HTMLInputElement>("#url")!
+      .value.replace(/\/(api)?$/, "") + "/";
   const user = document.querySelector<HTMLInputElement>("#user")!.value;
-  const password = document.querySelector<HTMLInputElement>("#password")!.value;
+  const token = document.querySelector<HTMLInputElement>("#token")!.value;
 
-  const response = await KimaiApi.getCurrentUser(url, user, password);
+  const response = await KimaiApi.getCurrentUser(url, user, token);
 
   settings = {
     backendProviderConfig: {
@@ -34,7 +35,7 @@ document.querySelector("#login")!.addEventListener("click", async () => {
           : AuthenticationState.error,
         url,
         user,
-        password,
+        token,
         userId: response.id,
       },
     },

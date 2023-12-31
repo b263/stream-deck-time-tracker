@@ -27,6 +27,9 @@ export async function tryFetch<T>(
 ): Promise<ApiResponse<T>> {
   try {
     const response = await fetch(url, options);
+    if (response.status !== 200) {
+      throw new Error(`${response.statusText} (${response.status})`);
+    }
     const result = await response.json();
     return {
       success: true,

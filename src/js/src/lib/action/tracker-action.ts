@@ -1,6 +1,6 @@
 import { KimaiApi } from "../api/kimai-api";
 import { KimaiApiTrackerConnector } from "../api/kimai-api-tracker-connector";
-import { BackendProvider, StateKey } from "../constants";
+import { ActionKey, BackendProvider, StateKey } from "../constants";
 import { Store } from "../store/store";
 import { Tracker } from "../tracker";
 import { AppState } from "../types";
@@ -8,7 +8,7 @@ import { AppState } from "../types";
 export function initTrackerAction() {
   const store = Store.get<AppState>();
 
-  const trackerAction = new Action("dev.b263.time-tracker.track");
+  const trackerAction = new Action(ActionKey.track);
 
   trackerAction.onDidReceiveSettings(
     ({ context, payload: { settings } }: any) => {
@@ -40,9 +40,9 @@ export function initTrackerAction() {
   async function getApi() {
     const {
       backendProviderConfig: {
-        [BackendProvider.kimai]: { url, user, password },
+        [BackendProvider.kimai]: { url, user, token },
       },
     } = await store.once(StateKey.globalSettings);
-    return new KimaiApi(url, user, password);
+    return KimaiApi.config({ url, user, token }).get();
   }
 }

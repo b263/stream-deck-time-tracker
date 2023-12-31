@@ -139,9 +139,9 @@ function resetActivityIfNotInProject(activities: any[], activityId: any) {
 }
 
 function getApi() {
-  const { url, user, password } = State.get(StateKey.globalSettings)
+  const { url, user, token } = State.get(StateKey.globalSettings)
     .backendProviderConfig[BackendProvider.kimai];
-  return new KimaiApi(url, user, password);
+  return KimaiApi.config({ url, user, token }).get();
 }
 
 async function getForm() {
