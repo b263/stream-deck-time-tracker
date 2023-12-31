@@ -14,3 +14,12 @@ export const AuthenticationState = {
   loggedIn: "loggedIn",
   error: "error",
 } as const;
+
+export const AppEvent = {
+  actionSuccess: "actionSuccess",
+  actionAlert: "actionAlert",
+} as const;
+
+export const ActionKey = {
+  track: "dev.b263.time-tracker.track",
+} as const;

@@ -8,8 +8,24 @@ import {
   tryFetch,
 } from "./api";
 
+type ApiConfig = {
+  url: string;
+  user: string;
+  token: string;
+};
+
 export class KimaiApi {
   static instance: KimaiApi | null = null;
+
+  static config(c: ApiConfig) {
+    KimaiApi.get().config = c;
+    return KimaiApi;
+  }
+
+  static get() {
+    if (!KimaiApi.instance) KimaiApi.instance = new KimaiApi();
+    return KimaiApi.instance;
+  }
 
   static async getCurrentUser(baseUrl: string, user: string, token: string) {
     const url = `${baseUrl}api/users/me`;
@@ -30,12 +46,10 @@ export class KimaiApi {
   #user: string | undefined;
   #token: string | undefined;
 
-  constructor(url: string, user: string, token: string) {
-    if (KimaiApi.instance) return KimaiApi.instance;
+  set config({ url, user, token }: ApiConfig) {
     this.#baseUrl = url;
     this.#user = user;
     this.#token = token;
-    KimaiApi.instance = this;
   }
 
   get fetchOptions() {

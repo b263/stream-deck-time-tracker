@@ -7,7 +7,7 @@ export type BackendProviderConfig = {
   kimai: {
     url: string;
     user: string;
-    password: string;
+    token: string;
     userId?: number; // TODO: Currently unused. Remove?
     authenticationState?: (typeof AuthenticationState)[keyof typeof AuthenticationState];
   };
