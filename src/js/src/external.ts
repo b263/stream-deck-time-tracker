@@ -1,5 +1,5 @@
 import { KimaiApi } from "./lib/api/kimai-api";
-import { AuthenticationState, BackendProvider } from "./lib/constants";
+import { AuthenticationState } from "./lib/constants";
 import { GlobalSettings } from "./lib/types";
 
 let settings: GlobalSettings;
@@ -8,11 +8,11 @@ window.addEventListener("message", ({ data }) => {
   settings = data;
 
   document.querySelector<HTMLInputElement>("#url")!.value =
-    settings?.backendProviderConfig?.[BackendProvider.kimai]?.url ?? "";
+    settings?.backendProviderConfig?.["kimai"]?.url ?? "";
   document.querySelector<HTMLInputElement>("#user")!.value =
-    settings?.backendProviderConfig?.[BackendProvider.kimai]?.user ?? "";
+    settings?.backendProviderConfig?.["kimai"]?.user ?? "";
   document.querySelector<HTMLInputElement>("#token")!.value =
-    settings?.backendProviderConfig?.[BackendProvider.kimai]?.token ?? "";
+    settings?.backendProviderConfig?.["kimai"]?.token ?? "";
 
   updateState();
 });
@@ -29,7 +29,7 @@ document.querySelector("#login")!.addEventListener("click", async () => {
 
   settings = {
     backendProviderConfig: {
-      [BackendProvider.kimai]: {
+      ["kimai"]: {
         authenticationState: response?.id
           ? AuthenticationState.loggedIn
           : AuthenticationState.error,
@@ -54,8 +54,7 @@ function updateState() {
     .forEach((el: HTMLElement) => {
       if (
         el.dataset.status ===
-        settings?.backendProviderConfig?.[BackendProvider.kimai]
-          ?.authenticationState
+        settings?.backendProviderConfig?.["kimai"]?.authenticationState
       ) {
         el.style.display = "block";
       } else {

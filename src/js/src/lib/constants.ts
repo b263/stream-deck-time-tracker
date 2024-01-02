@@ -5,10 +5,6 @@ export const StateKey = {
   externalWindow: "externalWindow",
 } as const;
 
-export const BackendProvider = {
-  kimai: "kimai",
-} as const;
-
 export const AuthenticationState = {
   none: "none",
   loggedIn: "loggedIn",

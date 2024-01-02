@@ -1,5 +1,5 @@
 import { IconKeys, Icons } from "./icons";
-import { BackendProviders } from "./types";
+import { BackendProvider, BackendProviderPluginConfig } from "./types";
 
 export const TrackerEvent = {
   start: "start",
@@ -7,14 +7,11 @@ export const TrackerEvent = {
   requestWorkedToday: "requestWorkedToday",
 } as const;
 
-export type TrackerSettingsValue = {
-  projectId: number;
-  activityId: number;
-};
+export type TrackerSettingsValue = BackendProviderPluginConfig["kimai"];
 
 export type TrackerSettings = {
-  backendProvider: BackendProviders;
-  value: TrackerSettingsValue;
+  backendProvider: BackendProvider;
+  kimai: TrackerSettingsValue;
 };
 
 export class Tracker extends EventTarget {

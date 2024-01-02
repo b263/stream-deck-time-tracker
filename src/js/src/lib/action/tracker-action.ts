@@ -1,6 +1,6 @@
 import { KimaiApi } from "../api/kimai-api";
 import { KimaiApiTrackerConnector } from "../api/kimai-api-tracker-connector";
-import { ActionKey, BackendProvider, StateKey } from "../constants";
+import { ActionKey, StateKey } from "../constants";
 import { Store } from "../store/store";
 import { Tracker } from "../tracker";
 import { AppState } from "../types";
@@ -40,7 +40,7 @@ export function initTrackerAction() {
   async function getApi() {
     const {
       backendProviderConfig: {
-        [BackendProvider.kimai]: { url, user, token },
+        ["kimai"]: { url, user, token },
       },
     } = await store.once(StateKey.globalSettings);
     return KimaiApi.config({ url, user, token }).get();

@@ -7,6 +7,7 @@
   "scripts": {
     "lint": "eslint src",
     "build": "npm run lint && BUILD_TARGET=production rollup -c && npm run licenses",
+    "build:ui:track": "cd ../ui && npm run build:track && mv dist/action-track-pi/browser dist/action-track-pi/property-inspector && cp -r dist/action-track-pi/property-inspector ../dev.b263.time-tracker.sdPlugin/actions/track",
     "licenses": "generate-license-file --input package.json --output ../dev.b263.time-tracker.sdPlugin/THIRD-PARTY-LICENSES.txt --overwrite && cp ../../LICENSE ../dev.b263.time-tracker.sdPlugin/LICENSE.txt",
     "dist:version": "node_modules/node-jq/bin/jq '.Version' ../dev.b263.time-tracker.sdPlugin/manifest.json",
     "dist:dir": "npm run --silent dist:version | tr -d \"\\\"\"",

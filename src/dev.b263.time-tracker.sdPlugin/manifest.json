@@ -34,7 +34,7 @@
       ],
       "Tooltip": "Start/stop time tracking",
       "UUID": "dev.b263.time-tracker.track",
-      "PropertyInspectorPath": "actions/track/property-inspector/inspector.html"
+      "PropertyInspectorPath": "actions/track/property-inspector/index.html"
     }
   ]
 }

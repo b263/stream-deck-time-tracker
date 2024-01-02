@@ -16,7 +16,6 @@ function config([input, file]) {
       nodeResolve(),
       typescript({
         tsconfig: false,
-        // compilerOptions: { allowJs: true, outDir: "out", target: "es6" },
         compilerOptions: { target: "es6" },
       }),
       sentryRollupPlugin({
@@ -36,12 +35,4 @@ const target = "../dev.b263.time-tracker.sdPlugin";
 export default [
   [`${src}/app.ts`, `${target}/app.bundle.js`],
   [`${src}/external.ts`, `${target}/external.bundle.js`],
-  [
-    `${src}/action-track-pi.ts`,
-    `${target}/actions/track/property-inspector/inspector.bundle.js`,
-  ],
-  [
-    `${src}/action-report-pi.ts`,
-    `${target}/actions/report/property-inspector/inspector.bundle.js`,
-  ],
 ].map(config);

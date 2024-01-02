@@ -54,7 +54,7 @@ export class KimaiApiTrackerConnector {
   }
 
   settings(tracker: Tracker): TrackerSettingsValue | undefined {
-    return tracker.settings?.value;
+    return tracker.settings?.[tracker.settings?.backendProvider];
   }
 
   async getWorkedToday({ projectId, activityId }: TrackerSettingsValue) {

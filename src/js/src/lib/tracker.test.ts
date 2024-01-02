@@ -61,14 +61,14 @@ describe("Tracker", () => {
       const tracker = Tracker.create("A", false);
       tracker.settings = {
         backendProvider: "kimai",
-        value: {
+        kimai: {
           projectId: 1,
           activityId: 2,
         },
       };
       expect(tracker.settings).toStrictEqual({
         backendProvider: "kimai",
-        value: {
+        kimai: {
           projectId: 1,
           activityId: 2,
         },
@@ -80,7 +80,7 @@ describe("Tracker", () => {
       const tracker = Tracker.create("ctx", false);
       tracker.settings = {
         backendProvider: "kimai",
-        value: { projectId: 0, activityId: 0 },
+        kimai: { projectId: 0, activityId: 0 },
       };
       expect(spy).toHaveBeenCalledWith(
         expect.objectContaining({

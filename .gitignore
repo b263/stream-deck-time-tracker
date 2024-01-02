@@ -1,6 +1,7 @@
 /src/dev.b263.time-tracker.sdPlugin/**/*.bundle.js
 /src/dev.b263.time-tracker.sdPlugin/**/*.bundle.js.map
 /src/dev.b263.time-tracker.sdPlugin/*.txt
+/src/dev.b263.time-tracker.sdPlugin/actions/track/property-inspector
 
 DistributionTool
 

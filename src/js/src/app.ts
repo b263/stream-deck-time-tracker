@@ -1,6 +1,6 @@
 import { initTrackerAction } from "./lib/action/tracker-action";
 import { KimaiApi } from "./lib/api/kimai-api";
-import { AppEvent, BackendProvider, StateKey } from "./lib/constants";
+import { AppEvent, StateKey } from "./lib/constants";
 import { Store } from "./lib/store/store";
 import { AppState, GlobalSettings } from "./lib/types";
 
@@ -17,7 +17,7 @@ $SD.onConnected(() => {
       store.patchState({
         [StateKey.globalSettings]: settings,
       });
-      KimaiApi.config(settings.backendProviderConfig[BackendProvider.kimai]);
+      KimaiApi.config(settings.backendProviderConfig["kimai"]);
     }
   );
 });
