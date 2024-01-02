@@ -29,7 +29,8 @@ document.querySelector("#login")!.addEventListener("click", async () => {
 
   settings = {
     backendProviderConfig: {
-      ["kimai"]: {
+      local: {},
+      kimai: {
         authenticationState: response?.id
           ? AuthenticationState.loggedIn
           : AuthenticationState.error,

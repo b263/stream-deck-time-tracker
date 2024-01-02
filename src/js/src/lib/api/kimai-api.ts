@@ -1,5 +1,4 @@
 import { format, startOfToday } from "date-fns";
-import { TrackerSettingsValue } from "../tracker";
 import {
   ApiResponse,
   Category,
@@ -7,6 +6,7 @@ import {
   TrackingItem,
   tryFetch,
 } from "./api";
+import { KimaiBackendProviderPluginConfig } from "../types";
 
 type ApiConfig = {
   url: string;
@@ -65,7 +65,7 @@ export class KimaiApi {
   async startTracking({
     projectId,
     activityId,
-  }: TrackerSettingsValue): Promise<ApiResponse<TrackingItem>> {
+  }: KimaiBackendProviderPluginConfig): Promise<ApiResponse<TrackingItem>> {
     const url = `${this.#baseUrl}api/timesheets`;
     const body = {
       begin: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),

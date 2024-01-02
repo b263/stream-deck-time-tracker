@@ -1,7 +1,7 @@
 import { AppEvent, StateKey } from "../constants";
 import { Store } from "../store/store";
-import { Tracker, TrackerEvent, TrackerSettingsValue } from "../tracker";
-import { AppState } from "../types";
+import { Tracker, TrackerEvent } from "../tracker";
+import { AppState, KimaiBackendProviderPluginConfig } from "../types";
 import { KimaiApi } from "./kimai-api";
 
 export class KimaiApiTrackerConnector {
@@ -53,11 +53,14 @@ export class KimaiApiTrackerConnector {
     });
   }
 
-  settings(tracker: Tracker): TrackerSettingsValue | undefined {
-    return tracker.settings?.[tracker.settings?.backendProvider];
+  settings(tracker: Tracker): KimaiBackendProviderPluginConfig | undefined {
+    return tracker.settings?.["kimai"];
   }
 
-  async getWorkedToday({ projectId, activityId }: TrackerSettingsValue) {
+  async getWorkedToday({
+    projectId,
+    activityId,
+  }: KimaiBackendProviderPluginConfig) {
     const result = await this.#api.listTodaysTimeEntries(projectId, activityId);
     if (!result.success) {
       return 0;

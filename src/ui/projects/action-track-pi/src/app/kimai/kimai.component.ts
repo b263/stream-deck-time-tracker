@@ -1,23 +1,25 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   DestroyRef,
+  NgZone,
   inject,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { STATE } from '../app.config';
 import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
 import { Category } from '../../../../../../js/src/lib/api/api';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DEFAULT_SETTINGS } from '../app.component';
 import { StateKey } from '../../../../../../js/src/lib/constants';
-import { KimaiApi } from '../../../../../../js/src/lib/api/kimai-api';
 import {
   KimaiBackendProviderPluginConfig,
   PluginSettings,
 } from '../../../../../../js/src/lib/types';
+import { ApiFactoryService } from '../api-factory.service';
+import { DEFAULT_SETTINGS } from '../app.component';
+import { STATE } from '../app.config';
+
+const backendProvider = 'kimai' as const;
 
 @Component({
   selector: 'app-kimai',
@@ -29,7 +31,8 @@ import {
 export class KimaiComponent {
   private readonly state = inject(STATE);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly zone = inject(NgZone);
+  private readonly api = inject(ApiFactoryService);
 
   public readonly form = new FormGroup({
     projectId: new FormControl(0),
@@ -49,12 +52,11 @@ export class KimaiComponent {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe((value) => {
-        if (value.projectId != this.settings.kimai.projectId) {
+        if (value.projectId != this.settings.kimai!.projectId) {
           this.loadActivities(+value.projectId!);
           value.activityId = 0;
-          this.activities$.next([]);
           this.form.get('activityId')?.patchValue(0);
-          this.cdr.detectChanges();
+          this.zone.run(() => this.activities$.next([]));
         }
         $PI.setSettings(
           this.patchSettings({
@@ -67,20 +69,18 @@ export class KimaiComponent {
   }
 
   async loadProjects() {
-    this.loadingProjects$.next(true);
-    this.cdr.detectChanges();
-    const response = await this.getApi().getProjects();
+    this.zone.run(() => this.loadingProjects$.next(true));
+    const response = await this.getApi()!.getProjects();
     if (!response.success) {
       console.error('Could not load projects');
       return;
     }
-    const projectId = this.settings.kimai.projectId;
+    const projectId = this.settings.kimai!.projectId;
     const projects = response.body;
     this.form.get('projectId')?.patchValue(projectId, { emitEvent: false });
     console.log('projects', projects);
     this.projects$.next(projects);
-    this.loadingProjects$.next(false);
-    this.cdr.detectChanges();
+    this.zone.run(() => this.loadingProjects$.next(false));
     if (projectId > 0) {
       this.loadActivities(projectId);
     }
@@ -88,20 +88,18 @@ export class KimaiComponent {
 
   async loadActivities(projectId: number) {
     if (projectId == 0) return;
-    this.loadingActivities$.next(true);
-    this.cdr.detectChanges();
-    const response = await this.getApi().getActivities(projectId);
+    this.zone.run(() => this.loadingActivities$.next(true));
+    const response = await this.getApi()!.getActivities(projectId);
     if (!response.success) {
       console.error('Could not load activities');
       return;
     }
     const activities = response.body;
-    const activityId = this.settings.kimai.activityId;
+    const activityId = this.settings.kimai!.activityId;
     this.form.get('activityId')?.patchValue(activityId, { emitEvent: false });
     this.resetActivityIfNotInProject(activities, activityId);
     this.activities$.next(activities);
-    this.loadingActivities$.next(false);
-    this.cdr.detectChanges();
+    this.zone.run(() => this.loadingActivities$.next(false));
   }
 
   private get settings(): PluginSettings {
@@ -124,15 +122,13 @@ export class KimaiComponent {
     return {
       ...this.settings,
       kimai: {
-        ...this.settings.kimai,
+        ...this.settings.kimai!,
         ...updated,
       },
     };
   }
 
   getApi() {
-    const { url, user, token } =
-      this.state[StateKey.globalSettings].backendProviderConfig['kimai'];
-    return KimaiApi.config({ url, user, token }).get();
+    return this.api.get<typeof backendProvider>(backendProvider);
   }
 }
