@@ -6,7 +6,7 @@
   "Icon": "assets/category",
   "URL": "https://github.com/b263/stream-deck-time-tracker/issues",
   "Version": "0.5.0",
-  "CodePath": "app.html",
+  "CodePath": "app/app.html",
   "Software": {
     "MinimumVersion": "5.0"
   },

@@ -32,4 +32,4 @@ function config([input, file]) {
 const src = "./src";
 const target = "../dev.b263.time-tracker.sdPlugin";
 
-export default [[`${src}/app.ts`, `${target}/app.bundle.js`]].map(config);
+export default [[`${src}/app.ts`, `${target}/app/app.bundle.js`]].map(config);
