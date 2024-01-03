@@ -80,7 +80,7 @@ export class AppComponent {
   }
 
   openExternalSettings() {
-    const external = window.open('../../../external.html')!;
+    const external = window.open('../../../external/index.html')!;
     external.addEventListener('load', () => {
       external.postMessage(this.state[StateKey.globalSettings]);
     });

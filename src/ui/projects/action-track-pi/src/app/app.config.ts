@@ -11,6 +11,9 @@ export const STATE = new InjectionToken<AppState>('App state');
 export const appConfig: ApplicationConfig = {
   providers: [
     { provide: STATE, useValue: {} },
-    { provide: APP_BASE_HREF, useValue: (window as any)['_app_base'] || '/' },
+    {
+      provide: APP_BASE_HREF,
+      useValue: window.location.pathname.replace('index.html', ''),
+    },
   ],
 };

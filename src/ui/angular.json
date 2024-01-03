@@ -95,6 +95,7 @@
             "assets": ["projects/action-track-pi/src/assets"],
             "styles": [
               "../dev.b263.time-tracker.sdPlugin/libs/css/sdpi.css",
+              "../dev.b263.time-tracker.sdPlugin/styles/main.css",
               "projects/action-track-pi/src/styles.css"
             ],
             "scripts": [
@@ -155,11 +156,86 @@
           "options": {
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "projects/action-track-pi/tsconfig.spec.json",
-            "assets": [
-              "projects/action-track-pi/src/favicon.ico",
-              "projects/action-track-pi/src/assets"
-            ],
+            "assets": ["projects/action-track-pi/src/assets"],
             "styles": ["projects/action-track-pi/src/styles.css"],
+            "scripts": []
+          }
+        }
+      }
+    },
+    "external": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/external",
+      "sourceRoot": "projects/external/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "baseHref": ".",
+            "outputPath": "dist/external",
+            "index": "projects/external/src/index.html",
+            "browser": "projects/external/src/main.ts",
+            "polyfills": ["zone.js"],
+            "tsConfig": "projects/external/tsconfig.app.json",
+            "assets": ["projects/external/src/assets"],
+            "styles": [
+              "../dev.b263.time-tracker.sdPlugin/libs/css/sdpi.css",
+              "../dev.b263.time-tracker.sdPlugin/styles/main.css",
+              "projects/external/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "external:build:production"
+            },
+            "development": {
+              "buildTarget": "external:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "external:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "tsConfig": "projects/external/tsconfig.spec.json",
+            "assets": ["projects/external/src/assets"],
+            "styles": ["projects/external/src/styles.css"],
             "scripts": []
           }
         }

@@ -1,0 +1,67 @@
+<form [formGroup]="form">
+  <div class="sdpi-wrapper">
+    <ng-container formGroupName="backendProviderConfig">
+      <ng-container formGroupName="kimai">
+        <div class="sdpi-heading">Kimai settings</div>
+
+        <div class="wrap">
+          <p>Login with your Kimai user name and API password.</p>
+          <p>
+            You can set your API password in your Kimai user profile in the tab
+            "API access".
+          </p>
+        </div>
+
+        <div class="sdpi-item">
+          <div class="sdpi-item-label">URL</div>
+          <input type="text" class="sdpi-item-value" formControlName="url" />
+        </div>
+
+        <div class="sdpi-item">
+          <div class="sdpi-item-label">User name</div>
+          <input type="text" class="sdpi-item-value" formControlName="user" />
+        </div>
+
+        <div class="sdpi-item">
+          <div class="sdpi-item-label">API password</div>
+          <input
+            type="password"
+            class="sdpi-item-value"
+            formControlName="token"
+          />
+        </div>
+
+        <div class="sdpi-item">
+          <div class="sdpi-item-label">Sign in</div>
+          <button class="sdpi-item-value max30" (click)="onKimaiLogin()">
+            Sign in
+          </button>
+        </div>
+
+        <div class="sdpi-item" id="loginState">
+          <div class="sdpi-item-label">Status</div>
+          <ng-container
+            [ngSwitch]="
+              form.value.backendProviderConfig?.kimai?.authenticationState
+            "
+          >
+            <p class="sdpi-item-value" *ngSwitchCase="'error'">
+              Error: Could not log in
+            </p>
+            <p class="sdpi-item-value" *ngSwitchCase="'loggedIn'">
+              Successfully logged in
+            </p>
+            <p class="sdpi-item-value" *ngSwitchDefault>Not logged in</p>
+          </ng-container>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <hr />
+
+    <div class="wrap">
+      <button class="max30" (click)="onSave()">Save & close</button>
+      <button class="max30" (click)="onReset()">Reset</button>
+    </div>
+  </div>
+</form>
