@@ -17,7 +17,10 @@ $SD.onConnected(() => {
       store.patchState({
         [StateKey.globalSettings]: settings,
       });
-      KimaiApi.config(settings.backendProviderConfig["kimai"]);
+      // Initial settings are undefined
+      if (settings?.backendProviderConfig?.["kimai"]) {
+        KimaiApi.config(settings.backendProviderConfig["kimai"]);
+      }
     }
   );
 });

@@ -55,11 +55,19 @@ export class KimaiApiTrackerConnector implements ApiTrackerConnector {
   }
 
   async onRequestWorkedToday() {
-    this.#tracker.workedToday = await this.getWorkedToday({
-      projectId: this.settings(this.#tracker)!.projectId,
-      activityId: this.settings(this.#tracker)!.activityId,
-    });
-    this.#tracker.render();
+    const projectId = this.settings(this.#tracker)?.projectId;
+    const activityId = this.settings(this.#tracker)?.activityId;
+    if (projectId && activityId) {
+      try {
+        this.#tracker.workedToday = await this.getWorkedToday({
+          projectId,
+          activityId,
+        });
+        this.#tracker.render();
+      } catch (e) {
+        /* empty */
+      }
+    }
   }
 
   connect(tracker: Tracker) {

@@ -48,11 +48,9 @@ export function initTrackerAction(store: Store<AppState>) {
   });
 
   async function getApi() {
-    const {
-      backendProviderConfig: {
-        ["kimai"]: { url, user, token },
-      },
-    } = await store.once(StateKey.globalSettings);
-    return KimaiApi.config({ url, user, token }).get();
+    const globalSettings = await store.once(StateKey.globalSettings);
+    const apiConfig =
+      globalSettings?.backendProviderConfig?.["kimai"] ?? KimaiApi.emptyConfig;
+    return KimaiApi.config(apiConfig).get();
   }
 }
