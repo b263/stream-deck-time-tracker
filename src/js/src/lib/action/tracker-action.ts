@@ -2,7 +2,7 @@ import { KimaiApi } from "../api/kimai-api";
 import { KimaiApiTrackerConnector } from "../api/kimai-api-tracker-connector";
 import { ActionKey, StateKey } from "../constants";
 import { Store } from "../store/store";
-import { Tracker } from "../tracker";
+import { Tracker, TrackerEvent } from "../tracker";
 import { AppState } from "../types";
 
 export function initTrackerAction() {
@@ -15,7 +15,9 @@ export function initTrackerAction() {
       if (!Tracker.has(context)) {
         return console.warn("Tracker not found", { context });
       }
-      Tracker.get(context)!.settings = settings;
+      const tracker = Tracker.get(context)!;
+      tracker.settings = settings;
+      tracker.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
     }
   );
 
