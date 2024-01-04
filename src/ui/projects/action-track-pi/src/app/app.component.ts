@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ViewChild,
   inject,
@@ -35,6 +36,9 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 })
 export class AppComponent {
   private readonly state = inject(STATE);
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  public isKimaiAuthenticated = false;
 
   @ViewChild(KimaiComponent)
   private kimaiComponent!: KimaiComponent;
@@ -66,8 +70,12 @@ export class AppComponent {
           settings.backendProviderConfig?.['kimai']?.authenticationState ===
           AuthenticationState.loggedIn
         ) {
+          this.isKimaiAuthenticated = true;
           this.kimaiComponent.loadProjects();
+        } else {
+          this.isKimaiAuthenticated = false;
         }
+        this.cdr.detectChanges();
       });
     });
 

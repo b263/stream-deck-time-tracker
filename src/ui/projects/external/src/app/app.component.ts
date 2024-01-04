@@ -54,7 +54,7 @@ export class AppComponent {
   }
 
   async onKimaiLogin() {
-    let authenticationState: keyof typeof AuthenticationState =
+    let authenticationState: (typeof AuthenticationState)[keyof typeof AuthenticationState] =
       AuthenticationState.error;
     const { url, user, token } =
       this.patchedFormValue.backendProviderConfig!.kimai!;

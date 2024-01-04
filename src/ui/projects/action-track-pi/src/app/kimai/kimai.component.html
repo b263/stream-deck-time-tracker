@@ -1,4 +1,4 @@
-<form [formGroup]="form">
+<form [formGroup]="form" *ngIf="isAuthenticated; else notAuthenticated">
   <div class="sdpi-item">
     <div class="sdpi-item-label">Project</div>
     <select
@@ -37,3 +37,7 @@
     </select>
   </div>
 </form>
+
+<ng-template #notAuthenticated>
+  <p class="wrap">Sign in to load projects/activities</p>
+</ng-template>

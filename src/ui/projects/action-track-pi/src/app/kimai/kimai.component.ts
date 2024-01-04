@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  Input,
   NgZone,
   inject,
 } from '@angular/core';
@@ -33,6 +34,9 @@ export class KimaiComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly zone = inject(NgZone);
   private readonly api = inject(ApiFactoryService);
+
+  @Input()
+  public isAuthenticated = false;
 
   public readonly form = new FormGroup({
     projectId: new FormControl(0),
