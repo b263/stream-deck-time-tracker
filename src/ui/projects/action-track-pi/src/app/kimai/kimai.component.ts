@@ -18,7 +18,7 @@ import {
 } from '../../../../../../js/src/lib/types';
 import { ApiFactoryService } from '../api-factory.service';
 import { DEFAULT_SETTINGS } from '../app.component';
-import { STATE } from '../app.config';
+import { STORE } from '../app.config';
 
 const backendProvider = 'kimai' as const;
 
@@ -30,7 +30,7 @@ const backendProvider = 'kimai' as const;
   templateUrl: './kimai.component.html',
 })
 export class KimaiComponent {
-  private readonly state = inject(STATE);
+  private readonly store = inject(STORE);
   private readonly destroyRef = inject(DestroyRef);
   private readonly zone = inject(NgZone);
   private readonly api = inject(ApiFactoryService);
@@ -55,31 +55,32 @@ export class KimaiComponent {
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe((value) => {
-        if (value.projectId != this.settings.kimai!.projectId) {
+      .subscribe(async (value) => {
+        const settings = await this.getSettings();
+        if (value.projectId != settings.kimai!.projectId) {
           this.loadActivities(+value.projectId!);
           value.activityId = 0;
           this.form.get('activityId')?.patchValue(0);
           this.zone.run(() => this.activities$.next([]));
         }
-        $PI.setSettings(
-          this.patchSettings({
-            projectId: +value.projectId!,
-            activityId: +value.activityId!,
-          })
-        );
+        const patchedSettings = await this.patchSettings({
+          projectId: +value.projectId!,
+          activityId: +value.activityId!,
+        });
+        $PI.setSettings(patchedSettings);
         $PI.getSettings();
       });
   }
 
   async loadProjects() {
     this.zone.run(() => this.loadingProjects$.next(true));
-    const response = await this.getApi()!.getProjects();
+    const response = await (await this.getApi()).getProjects();
     if (!response.success) {
       console.error('Could not load projects');
       return;
     }
-    const projectId = this.settings.kimai!.projectId;
+    const settings = await this.getSettings();
+    const projectId = settings.kimai!.projectId;
     const projects = response.body;
     this.form.get('projectId')?.patchValue(projectId, { emitEvent: false });
     console.log('projects', projects);
@@ -93,40 +94,42 @@ export class KimaiComponent {
   async loadActivities(projectId: number) {
     if (projectId == 0) return;
     this.zone.run(() => this.loadingActivities$.next(true));
-    const response = await this.getApi()!.getActivities(projectId);
+    const response = await (await this.getApi()).getActivities(projectId);
     if (!response.success) {
       console.error('Could not load activities');
       return;
     }
+    const settings = await this.getSettings();
     const activities = response.body;
-    const activityId = this.settings.kimai!.activityId;
+    const activityId = settings.kimai!.activityId;
     this.form.get('activityId')?.patchValue(activityId, { emitEvent: false });
-    this.resetActivityIfNotInProject(activities, activityId);
+    await this.resetActivityIfNotInProject(activities, activityId);
     this.activities$.next(activities);
     this.zone.run(() => this.loadingActivities$.next(false));
   }
 
-  private get settings(): PluginSettings {
-    return this.state[StateKey.settings] ?? DEFAULT_SETTINGS;
+  private async getSettings(): Promise<PluginSettings> {
+    return await this.store.once(StateKey.settings, DEFAULT_SETTINGS);
   }
 
-  resetActivityIfNotInProject(activities: any[], activityId: number) {
+  async resetActivityIfNotInProject(activities: any[], activityId: number) {
     if (activityId > 0 && !activities.map((a) => a.id).includes(activityId)) {
-      const settings = this.patchSettings({
+      const patchedSettings = await this.patchSettings({
         activityId: 0,
       });
-      $PI.setSettings(settings);
+      $PI.setSettings(patchedSettings);
       $PI.getSettings();
     }
   }
 
-  patchSettings(
+  async patchSettings(
     updated: Partial<KimaiBackendProviderPluginConfig>
-  ): PluginSettings {
+  ): Promise<PluginSettings> {
+    const settings = await this.getSettings();
     return {
-      ...this.settings,
+      ...settings,
       kimai: {
-        ...this.settings.kimai!,
+        ...settings.kimai!,
         ...updated,
       },
     };

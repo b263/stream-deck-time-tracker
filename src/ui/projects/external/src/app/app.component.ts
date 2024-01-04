@@ -56,17 +56,22 @@ export class AppComponent {
   async onKimaiLogin() {
     let authenticationState: (typeof AuthenticationState)[keyof typeof AuthenticationState] =
       AuthenticationState.error;
+    let userId = 0;
     const { url, user, token } =
       this.patchedFormValue.backendProviderConfig!.kimai!;
     try {
       const response = await KimaiApi.getCurrentUser(url!, user!, token!);
-      authenticationState = response?.id
-        ? AuthenticationState.loggedIn
-        : AuthenticationState.error;
+      if (response?.id) {
+        authenticationState = AuthenticationState.loggedIn;
+        userId = response.id;
+      }
       console.log('getCurrentUser', response, authenticationState);
     } catch (e) {
       console.error('Error signing in', e);
     }
+    this.form
+      .get(['backendProviderConfig', 'kimai', 'userId'] as const)
+      ?.setValue(userId);
     this.form
       .get(['backendProviderConfig', 'kimai', 'authenticationState'] as const)
       ?.setValue(authenticationState);

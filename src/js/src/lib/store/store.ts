@@ -23,11 +23,12 @@ export class Store<T> {
     } as T);
   }
 
-  once<K extends keyof T>(key: K) {
+  once<K extends keyof T>(key: K, fallback?: any) {
+    const filterFn = fallback ? () => true : (state: T) => !!state;
     return firstValueFrom(
       this.state$.pipe(
-        filter((state) => !!state),
-        map((state) => state![key])
+        filter(filterFn),
+        map((state) => state![key] ?? fallback)
       )
     );
   }

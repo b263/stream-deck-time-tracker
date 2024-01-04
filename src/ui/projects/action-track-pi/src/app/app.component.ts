@@ -15,7 +15,7 @@ import {
   PluginSettings,
   SDConnectionInfo,
 } from '../../../../../js/src/lib/types';
-import { STATE } from './app.config';
+import { STORE } from './app.config';
 import { KimaiComponent } from './kimai/kimai.component';
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -35,7 +35,7 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  private readonly state = inject(STATE);
+  private readonly store = inject(STORE);
   private readonly cdr = inject(ChangeDetectorRef);
 
   public isKimaiAuthenticated = false;
@@ -60,12 +60,12 @@ export class AppComponent {
           ...(settings ?? {}),
         };
         console.log('$PI.onDidReceiveSettings', settings);
-        this.state[StateKey.settings] = settings;
+        this.store.patchState({ [StateKey.settings]: settings });
       });
 
       $PI.onDidReceiveGlobalSettings(({ payload: { settings } }: any) => {
         console.log('$PI.onGlobalSettingsReceived', settings);
-        this.state[StateKey.globalSettings] = settings;
+        this.store.patchState({ [StateKey.globalSettings]: settings });
         if (
           settings.backendProviderConfig?.['kimai']?.authenticationState ===
           AuthenticationState.loggedIn
@@ -79,9 +79,9 @@ export class AppComponent {
       });
     });
 
-    window.addEventListener('message', ({ data }) => {
-      this.state[StateKey.externalWindow]?.close();
-      this.state[StateKey.externalWindow] = null;
+    window.addEventListener('message', async ({ data }) => {
+      (await this.store.once(StateKey.externalWindow))?.close();
+      this.store.patchState({ [StateKey.externalWindow]: null });
       $PI.setGlobalSettings(data);
       $PI.getGlobalSettings();
     });
@@ -89,9 +89,10 @@ export class AppComponent {
 
   openExternalSettings() {
     const external = window.open('../../../external/index.html')!;
-    external.addEventListener('load', () => {
-      external.postMessage(this.state[StateKey.globalSettings]);
+    external.addEventListener('load', async () => {
+      const globalSettings = await this.store.once(StateKey.globalSettings);
+      external.postMessage(globalSettings);
     });
-    this.state[StateKey.externalWindow] = external;
+    this.store.patchState({ [StateKey.externalWindow]: external });
   }
 }

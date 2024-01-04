@@ -5,26 +5,24 @@ import {
 } from '../../../../../js/src/lib/types';
 import { KimaiApi } from '../../../../../js/src/lib/api/kimai-api';
 import { StateKey } from '../../../../../js/src/lib/constants';
-import { STATE } from './app.config';
+import { STORE } from './app.config';
 import { LocalApi } from '../../../../../js/src/lib/api/local-api';
 
 @Injectable({ providedIn: 'root' })
 export class ApiFactoryService {
-  private readonly state = inject(STATE);
+  private readonly store = inject(STORE);
 
-  get<T extends BackendProvider>(backendProvider: T): BackendProviderApi[T] {
+  async get<T extends BackendProvider>(
+    backendProvider: T
+  ): Promise<BackendProviderApi[T]> {
     switch (backendProvider) {
       case 'kimai':
-        const { url, user, token } =
-          this.state[StateKey.globalSettings].backendProviderConfig['kimai'];
-        if (!url || !user || !token) {
+        const kimaiConfig = (await this.store.once(StateKey.globalSettings))
+          ?.backendProviderConfig?.['kimai'];
+        if (!kimaiConfig.url || !kimaiConfig.user || !kimaiConfig.token) {
           console.error('Missing settings for provider kimai');
         }
-        return KimaiApi.config({
-          url,
-          user,
-          token,
-        }).get() as BackendProviderApi[T];
+        return KimaiApi.config(kimaiConfig).get() as BackendProviderApi[T];
     }
     return new LocalApi() as BackendProviderApi[T];
   }
