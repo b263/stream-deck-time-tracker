@@ -1,9 +1,12 @@
+import { ApiTrackerConnector } from "../api/api";
 import { KimaiApi } from "../api/kimai-api";
 import { KimaiApiTrackerConnector } from "../api/kimai-api-tracker-connector";
 import { ActionKey, StateKey } from "../constants";
 import { Store } from "../store/store";
 import { Tracker, TrackerEvent } from "../tracker";
 import { AppState } from "../types";
+
+const connectors = new Map<string, ApiTrackerConnector>();
 
 export function initTrackerAction(store: Store<AppState>) {
   const trackerAction = new Action(ActionKey.track);
@@ -15,6 +18,7 @@ export function initTrackerAction(store: Store<AppState>) {
       }
       const tracker = Tracker.get(context)!;
       tracker.settings = settings;
+
       tracker.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
     }
   );
@@ -23,7 +27,10 @@ export function initTrackerAction(store: Store<AppState>) {
     if (!Tracker.has(context)) {
       const tracker = Tracker.create(context, false);
       const api = await getApi();
-      new KimaiApiTrackerConnector(api, store).connect(tracker);
+      const connector = new KimaiApiTrackerConnector(api, store).connect(
+        tracker
+      );
+      connectors.set(context, connector);
       $SD.getSettings(context);
     }
   });
