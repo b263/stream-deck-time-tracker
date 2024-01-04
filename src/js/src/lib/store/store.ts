@@ -1,17 +1,8 @@
-import { BehaviorSubject, filter, map, firstValueFrom } from "rxjs";
+import { BehaviorSubject, filter, map, firstValueFrom, Observable } from "rxjs";
 
 export class Store<T> {
-  static #instance: Store<any>;
-
-  static get<T>(): Store<T> {
-    if (!Store.#instance) {
-      Store.#instance = new Store<T>();
-    }
-    return Store.#instance;
-  }
-
   #state = new BehaviorSubject<T | null>(null);
-  state$ = this.#state.pipe(filter((state) => !!state));
+  state$ = this.#state.pipe(filter((state) => !!state)) as Observable<T>;
 
   constructor() {
     console.log("Store.constructor()");

@@ -5,9 +5,7 @@ import { Store } from "../store/store";
 import { Tracker, TrackerEvent } from "../tracker";
 import { AppState } from "../types";
 
-export function initTrackerAction() {
-  const store = Store.get<AppState>();
-
+export function initTrackerAction(store: Store<AppState>) {
   const trackerAction = new Action(ActionKey.track);
 
   trackerAction.onDidReceiveSettings(
