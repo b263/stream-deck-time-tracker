@@ -1,17 +1,8 @@
-import { BehaviorSubject, filter, map, firstValueFrom } from "rxjs";
+import { BehaviorSubject, filter, map, firstValueFrom, Observable } from "rxjs";
 
 export class Store<T> {
-  static #instance: Store<any>;
-
-  static get<T>(): Store<T> {
-    if (!Store.#instance) {
-      Store.#instance = new Store<T>();
-    }
-    return Store.#instance;
-  }
-
   #state = new BehaviorSubject<T | null>(null);
-  state$ = this.#state.pipe(filter((state) => !!state));
+  state$ = this.#state.pipe(filter((state) => !!state)) as Observable<T>;
 
   constructor() {
     console.log("Store.constructor()");
@@ -32,11 +23,12 @@ export class Store<T> {
     } as T);
   }
 
-  once<K extends keyof T>(key: K) {
+  once<K extends keyof T>(key: K, fallback?: any) {
+    const filterFn = fallback ? () => true : (state: T) => !!state;
     return firstValueFrom(
       this.state$.pipe(
-        filter((state) => !!state),
-        map((state) => state![key])
+        filter(filterFn),
+        map((state) => state![key] ?? fallback)
       )
     );
   }

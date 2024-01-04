@@ -1,0 +1,43 @@
+<form [formGroup]="form" *ngIf="isAuthenticated; else notAuthenticated">
+  <div class="sdpi-item">
+    <div class="sdpi-item-label">Project</div>
+    <select
+      *ngIf="projects$ | async as projects"
+      class="sdpi-item-value select"
+      formControlName="projectId"
+    >
+      <option *ngIf="(loadingProjects$ | async) === false" value="0">
+        - Select project -
+      </option>
+      <option *ngIf="(loadingProjects$ | async) === true" value="0">
+        - Loading... -
+      </option>
+      <option *ngFor="let project of projects" [value]="project.id">
+        {{ project.name }}
+      </option>
+    </select>
+  </div>
+
+  <div class="sdpi-item">
+    <div class="sdpi-item-label">Activity</div>
+    <select
+      *ngIf="activities$ | async as activities"
+      class="sdpi-item-value select"
+      formControlName="activityId"
+    >
+      <option *ngIf="(loadingActivities$ | async) === false" value="0">
+        - Select activity -
+      </option>
+      <option *ngIf="(loadingActivities$ | async) === true" value="0">
+        - Loading... -
+      </option>
+      <option *ngFor="let activity of activities" [value]="activity.id">
+        {{ activity.name }}
+      </option>
+    </select>
+  </div>
+</form>
+
+<ng-template #notAuthenticated>
+  <p class="wrap">Sign in to load projects/activities</p>
+</ng-template>

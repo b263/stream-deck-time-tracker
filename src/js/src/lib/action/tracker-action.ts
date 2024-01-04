@@ -1,13 +1,14 @@
+import { ApiTrackerConnector } from "../api/api";
 import { KimaiApi } from "../api/kimai-api";
 import { KimaiApiTrackerConnector } from "../api/kimai-api-tracker-connector";
-import { ActionKey, BackendProvider, StateKey } from "../constants";
+import { ActionKey, StateKey } from "../constants";
 import { Store } from "../store/store";
-import { Tracker } from "../tracker";
+import { Tracker, TrackerEvent } from "../tracker";
 import { AppState } from "../types";
 
-export function initTrackerAction() {
-  const store = Store.get<AppState>();
+const connectors = new Map<string, ApiTrackerConnector>();
 
+export function initTrackerAction(store: Store<AppState>) {
   const trackerAction = new Action(ActionKey.track);
 
   trackerAction.onDidReceiveSettings(
@@ -15,7 +16,13 @@ export function initTrackerAction() {
       if (!Tracker.has(context)) {
         return console.warn("Tracker not found", { context });
       }
-      Tracker.get(context)!.settings = settings;
+      const tracker = Tracker.get(context)!;
+      tracker.settings = settings;
+      // When the backend provider can be changed:
+      // - Disconnect the current connector from the tracker
+      // - Create a new connector with the correct API
+      // - Update the connectors Map
+      tracker.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
     }
   );
 
@@ -23,7 +30,10 @@ export function initTrackerAction() {
     if (!Tracker.has(context)) {
       const tracker = Tracker.create(context, false);
       const api = await getApi();
-      new KimaiApiTrackerConnector(api, store).connect(tracker);
+      const connector = new KimaiApiTrackerConnector(api, store).connect(
+        tracker
+      );
+      connectors.set(context, connector);
       $SD.getSettings(context);
     }
   });
@@ -38,11 +48,9 @@ export function initTrackerAction() {
   });
 
   async function getApi() {
-    const {
-      backendProviderConfig: {
-        [BackendProvider.kimai]: { url, user, token },
-      },
-    } = await store.once(StateKey.globalSettings);
-    return KimaiApi.config({ url, user, token }).get();
+    const globalSettings = await store.once(StateKey.globalSettings);
+    const apiConfig =
+      globalSettings?.backendProviderConfig?.["kimai"] ?? KimaiApi.emptyConfig;
+    return KimaiApi.config(apiConfig).get();
   }
 }

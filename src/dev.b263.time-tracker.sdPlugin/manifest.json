@@ -5,8 +5,8 @@
   "Description": "Time tracker using the Tracking Time platform. Requires a free account.",
   "Icon": "assets/category",
   "URL": "https://github.com/b263/stream-deck-time-tracker/issues",
-  "Version": "0.5.0",
-  "CodePath": "app.html",
+  "Version": "0.6.0",
+  "CodePath": "app/app.html",
   "Software": {
     "MinimumVersion": "5.0"
   },
@@ -34,7 +34,7 @@
       ],
       "Tooltip": "Start/stop time tracking",
       "UUID": "dev.b263.time-tracker.track",
-      "PropertyInspectorPath": "actions/track/property-inspector/inspector.html"
+      "PropertyInspectorPath": "actions/track/property-inspector/index.html"
     }
   ]
 }

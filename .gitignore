@@ -1,9 +1,11 @@
 /src/dev.b263.time-tracker.sdPlugin/**/*.bundle.js
 /src/dev.b263.time-tracker.sdPlugin/**/*.bundle.js.map
 /src/dev.b263.time-tracker.sdPlugin/*.txt
+/src/dev.b263.time-tracker.sdPlugin/actions/track/property-inspector
+/src/dev.b263.time-tracker.sdPlugin/external
 
 DistributionTool
 
 .DS_Store
-*.svg
+/*.svg
 

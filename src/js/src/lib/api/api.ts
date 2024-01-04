@@ -1,3 +1,6 @@
+import { Tracker } from "../tracker";
+import { BackendProvider } from "../types";
+
 export type ApiResponse<T> =
   | {
       success: true;
@@ -20,6 +23,11 @@ export type Category = {
   id: string;
   name: string;
 };
+
+export interface ApiTrackerConnector {
+  backendProvider: BackendProvider;
+  connect: (tracker: Tracker) => void;
+}
 
 export async function tryFetch<T>(
   url: string,

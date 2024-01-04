@@ -1,5 +1,4 @@
 import { format, startOfToday } from "date-fns";
-import { TrackerSettingsValue } from "../tracker";
 import {
   ApiResponse,
   Category,
@@ -7,6 +6,7 @@ import {
   TrackingItem,
   tryFetch,
 } from "./api";
+import { KimaiBackendProviderPluginConfig } from "../types";
 
 type ApiConfig = {
   url: string;
@@ -17,8 +17,14 @@ type ApiConfig = {
 export class KimaiApi {
   static instance: KimaiApi | null = null;
 
+  static emptyConfig = {
+    url: "",
+    user: "",
+    token: "",
+  };
+
   static config(c: ApiConfig) {
-    KimaiApi.get().config = c;
+    KimaiApi.get().config = c ?? KimaiApi.emptyConfig;
     return KimaiApi;
   }
 
@@ -62,10 +68,23 @@ export class KimaiApi {
     } as RequestInit; // eslint-disable-line
   }
 
+  assertValidConfig() {
+    if (!this.#user) {
+      throw new Error("Invalid config. User must not be empty.");
+    }
+    if (!this.#baseUrl) {
+      throw new Error("Invalid config. BaseUrl must not be empty.");
+    }
+    if (!this.#token) {
+      throw new Error("Invalid config. Token must not be empty.");
+    }
+  }
+
   async startTracking({
     projectId,
     activityId,
-  }: TrackerSettingsValue): Promise<ApiResponse<TrackingItem>> {
+  }: KimaiBackendProviderPluginConfig): Promise<ApiResponse<TrackingItem>> {
+    this.assertValidConfig();
     const url = `${this.#baseUrl}api/timesheets`;
     const body = {
       begin: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
@@ -82,6 +101,7 @@ export class KimaiApi {
   }
 
   async stopTracking(id: number) {
+    this.assertValidConfig();
     const url = `${this.#baseUrl}api/timesheets/${id}/stop`;
     const options = {
       ...this.fetchOptions,
@@ -91,11 +111,13 @@ export class KimaiApi {
   }
 
   async getProjects() {
+    this.assertValidConfig();
     const url = `${this.#baseUrl}api/projects`;
     return tryFetch<Category[]>(url, this.fetchOptions);
   }
 
   async getActivities(projectId: number) {
+    this.assertValidConfig();
     const params = new URLSearchParams({
       project: String(projectId),
     });
@@ -107,6 +129,7 @@ export class KimaiApi {
     projectId: number,
     activityId: number
   ): Promise<ApiResponse<TimeEntry[]>> {
+    this.assertValidConfig();
     if (!projectId || !activityId) {
       return {
         success: false,

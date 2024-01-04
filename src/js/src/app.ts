@@ -1,10 +1,10 @@
 import { initTrackerAction } from "./lib/action/tracker-action";
 import { KimaiApi } from "./lib/api/kimai-api";
-import { AppEvent, BackendProvider, StateKey } from "./lib/constants";
+import { AppEvent, StateKey } from "./lib/constants";
 import { Store } from "./lib/store/store";
 import { AppState, GlobalSettings } from "./lib/types";
 
-const store = Store.get<AppState>();
+const store = new Store<AppState>();
 
 $SD.onConnected(() => {
   $SD.getGlobalSettings();
@@ -17,7 +17,10 @@ $SD.onConnected(() => {
       store.patchState({
         [StateKey.globalSettings]: settings,
       });
-      KimaiApi.config(settings.backendProviderConfig[BackendProvider.kimai]);
+      // Initial settings are undefined
+      if (settings?.backendProviderConfig?.["kimai"]) {
+        KimaiApi.config(settings.backendProviderConfig["kimai"]);
+      }
     }
   );
 });
@@ -30,4 +33,4 @@ EventEmitter.on(AppEvent.actionAlert, (context: string) =>
   $SD.showAlert(context)
 );
 
-initTrackerAction();
+initTrackerAction(store);

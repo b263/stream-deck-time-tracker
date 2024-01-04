@@ -1,21 +1,11 @@
 import { IconKeys, Icons } from "./icons";
-import { BackendProviders } from "./types";
+import { PluginSettings } from "./types";
 
 export const TrackerEvent = {
   start: "start",
   stop: "stop",
   requestWorkedToday: "requestWorkedToday",
 } as const;
-
-export type TrackerSettingsValue = {
-  projectId: number;
-  activityId: number;
-};
-
-export type TrackerSettings = {
-  backendProvider: BackendProviders;
-  value: TrackerSettingsValue;
-};
 
 export class Tracker extends EventTarget {
   static instances = new Map<string, Tracker>();
@@ -55,15 +45,15 @@ export class Tracker extends EventTarget {
     this.running = running;
   }
 
-  #settings: TrackerSettings | undefined;
-  public set settings(settings: TrackerSettings) {
+  #settings: PluginSettings | undefined;
+  public set settings(settings: PluginSettings) {
     console.log("Tracker set settings", settings);
     this.#settings = settings;
     if (typeof this.workedToday !== "number") {
       this.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
     }
   }
-  public get settings(): TrackerSettings | undefined {
+  public get settings(): PluginSettings | undefined {
     return this.#settings;
   }
 
