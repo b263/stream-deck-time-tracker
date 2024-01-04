@@ -18,7 +18,10 @@ export function initTrackerAction(store: Store<AppState>) {
       }
       const tracker = Tracker.get(context)!;
       tracker.settings = settings;
-
+      // When the backend provider can be changed:
+      // - Disconnect the current connector from the tracker
+      // - Create a new connector with the correct API
+      // - Update the connectors Map
       tracker.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
     }
   );
