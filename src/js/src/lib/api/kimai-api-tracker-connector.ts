@@ -47,7 +47,7 @@ export class KimaiApiTrackerConnector implements ApiTrackerConnector {
         return;
       }
       EventEmitter.emit(AppEvent.actionSuccess, this.#tracker.context);
-      this.#tracker.dispatchEvent(new Event(TrackerEvent.requestWorkedToday)); // Prevent inconsistencies between local and persisted data
+      this.#tracker.update(); // Prevent inconsistencies between local and persisted data
     } else {
       throw new Error("Cannot stop tracker. ID is undefined");
     }

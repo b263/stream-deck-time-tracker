@@ -3,7 +3,7 @@ import { KimaiApi } from "../api/kimai-api";
 import { KimaiApiTrackerConnector } from "../api/kimai-api-tracker-connector";
 import { ActionKey, StateKey } from "../constants";
 import { Store } from "../store/store";
-import { Tracker, TrackerEvent } from "../tracker";
+import { Tracker } from "../tracker";
 import { AppState } from "../types";
 
 const connectors = new Map<string, ApiTrackerConnector>();
@@ -22,7 +22,7 @@ export function initTrackerAction(store: Store<AppState>) {
       // - Disconnect the current connector from the tracker
       // - Create a new connector with the correct API
       // - Update the connectors Map
-      tracker.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
+      tracker.update();
     }
   );
 

@@ -88,6 +88,10 @@ export class Tracker extends EventTarget {
     this.startTime = undefined;
   }
 
+  update() {
+    this.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
+  }
+
   render() {
     console.log("Render tracking icon", this);
     if (this.running) {
