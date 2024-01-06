@@ -36,7 +36,7 @@ export function initTrackerAction(store: Store<AppState>) {
       connectors.set(context, connector);
       $SD.getSettings(context);
     } else {
-      Tracker.get(context)!.update();
+      Tracker.get(context)!.render();
     }
   });
 
