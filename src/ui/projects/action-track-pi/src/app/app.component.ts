@@ -32,7 +32,6 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, KimaiComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
 })
 export class AppComponent {
   private readonly store = inject(STORE);

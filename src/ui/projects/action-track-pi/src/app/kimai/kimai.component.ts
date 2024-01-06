@@ -21,6 +21,7 @@ import { DEFAULT_SETTINGS } from '../app.component';
 import { STORE } from '../app.config';
 
 const backendProvider = 'kimai' as const;
+const storagePrefix = 'ActionTrackPI:KimaiComponent' as const;
 
 @Component({
   selector: 'app-kimai',
@@ -66,15 +67,11 @@ export class KimaiComponent {
     this.getInitialData();
   }
 
-  get storagePrefix() {
-    return `ActionTrackPI:KimaiComponent`;
-  }
-
   private async getInitialData() {
     const settings = (await this.getSettings())?.kimai;
-    const projects = localStorage.getItem(`${this.storagePrefix}:projects`);
+    const projects = localStorage.getItem(`${storagePrefix}:projects`);
     const activities = localStorage.getItem(
-      `${this.storagePrefix}:activities:${settings?.projectId}`
+      `${storagePrefix}:activities:${settings?.projectId}`
     );
     this.zone.run(() => {
       if (settings?.projectId) {
@@ -128,10 +125,7 @@ export class KimaiComponent {
     const projects = response.body;
     this.form.get('projectId')?.patchValue(projectId, { emitEvent: false });
     console.log('projects', projects);
-    localStorage.setItem(
-      `${this.storagePrefix}:projects`,
-      JSON.stringify(projects)
-    );
+    localStorage.setItem(`${storagePrefix}:projects`, JSON.stringify(projects));
     this.zone.run(() => {
       this.projects$.next(projects);
       this.loadingProjects$.next(false);
@@ -155,7 +149,7 @@ export class KimaiComponent {
     this.form.get('activityId')?.patchValue(activityId, { emitEvent: false });
     await this.resetActivityIfNotInProject(activities, activityId);
     localStorage.setItem(
-      `${this.storagePrefix}:activities:${projectId}`,
+      `${storagePrefix}:activities:${projectId}`,
       JSON.stringify(activities)
     );
     this.zone.run(() => {
