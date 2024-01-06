@@ -189,20 +189,4 @@ export class KimaiComponent {
   getApi() {
     return this.api.get<typeof backendProvider>(backendProvider);
   }
-
-  projectsPlaceholderValue(projects: Category[]) {
-    return projects.find(
-      (a) => Number(a.id) === Number(this.form.value?.projectId)
-    )
-      ? 0
-      : this.form.value?.projectId;
-  }
-
-  activitiesPlaceholderValue(activities: Category[]) {
-    return activities.find(
-      (a) => Number(a.id) === Number(this.form.value?.activityId)
-    )
-      ? 0
-      : this.form.value?.activityId;
-  }
 }

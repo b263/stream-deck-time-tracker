@@ -1,6 +1,4 @@
 <form [formGroup]="form" *ngIf="isAuthenticated; else notAuthenticated">
-  <div>form projectId: {{ form.value.projectId }}</div>
-  <div>projects.length: {{ (projects$ | async)?.length }}</div>
   <div class="sdpi-item">
     <div class="sdpi-item-label">Project</div>
     <select
@@ -8,9 +6,7 @@
       class="sdpi-item-value select"
       formControlName="projectId"
     >
-      <option [value]="projectsPlaceholderValue(projects)">
-        - Select project -
-      </option>
+      <option value="0">- Select project -</option>
       <option *ngFor="let project of projects" [value]="project.id">
         {{ project.name }}
       </option>
@@ -28,9 +24,7 @@
       class="sdpi-item-value select"
       formControlName="activityId"
     >
-      <option [value]="activitiesPlaceholderValue(activities)">
-        - Select activity -
-      </option>
+      <option value="0">- Select activity -</option>
       <option *ngFor="let activity of activities" [value]="activity.id">
         {{ activity.name }}
       </option>
