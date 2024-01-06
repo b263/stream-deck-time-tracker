@@ -15,7 +15,7 @@ import {
   PluginSettings,
   SDConnectionInfo,
 } from '../../../../../js/src/lib/types';
-import { STORE } from './app.config';
+import { CONTEXT, STORE } from './app.config';
 import { KimaiComponent } from './kimai/kimai.component';
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -37,19 +37,19 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 export class AppComponent {
   private readonly store = inject(STORE);
   private readonly cdr = inject(ChangeDetectorRef);
+  public readonly context$ = inject(CONTEXT);
 
   public isKimaiAuthenticated = false;
-
-  @ViewChild(KimaiComponent)
-  private kimaiComponent!: KimaiComponent;
 
   constructor() {
     $PI.onConnected((connectionInfo: SDConnectionInfo) => {
       console.log('$PI.onConnected(connectionInfo)', { connectionInfo });
 
       const {
-        actionInfo: { action },
+        actionInfo: { action, context },
       } = connectionInfo;
+
+      this.context$.next(context);
 
       $PI.getSettings();
       $PI.getGlobalSettings();
@@ -71,7 +71,6 @@ export class AppComponent {
           AuthenticationState.loggedIn
         ) {
           this.isKimaiAuthenticated = true;
-          this.kimaiComponent.loadProjects();
         } else {
           this.isKimaiAuthenticated = false;
         }

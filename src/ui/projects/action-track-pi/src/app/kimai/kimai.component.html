@@ -1,4 +1,8 @@
 <form [formGroup]="form" *ngIf="isAuthenticated; else notAuthenticated">
+  <div *ngFor="let project of projects$ | async">
+    {{ project.id }}: {{ project.name }}
+  </div>
+  <div>{{ form.value.projectId }}:{{ form.value.activityId }}</div>
   <div class="sdpi-item">
     <div class="sdpi-item-label">Project</div>
     <select
