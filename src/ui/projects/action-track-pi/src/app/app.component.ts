@@ -3,10 +3,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  ViewChild,
   inject,
 } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   AuthenticationState,
   StateKey,
@@ -16,6 +15,7 @@ import {
   SDConnectionInfo,
 } from '../../../../../js/src/lib/types';
 import { CONTEXT, STORE } from './app.config';
+import { DebugComponent } from './debug/debug.component';
 import { KimaiComponent } from './kimai/kimai.component';
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -30,15 +30,17 @@ export const DEFAULT_SETTINGS: PluginSettings = {
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, KimaiComponent],
+  imports: [CommonModule, ReactiveFormsModule, KimaiComponent, DebugComponent],
   templateUrl: './app.component.html',
 })
 export class AppComponent {
   private readonly store = inject(STORE);
-  private readonly cdr = inject(ChangeDetectorRef);
+  public readonly cdr = inject(ChangeDetectorRef);
   public readonly context$ = inject(CONTEXT);
 
   public isKimaiAuthenticated = false;
+
+  public debugFC = new FormControl(false);
 
   constructor() {
     $PI.onConnected((connectionInfo: SDConnectionInfo) => {
@@ -60,6 +62,7 @@ export class AppComponent {
         };
         console.log('$PI.onDidReceiveSettings', settings);
         this.store.patchState({ [StateKey.settings]: settings });
+        this.cdr.detectChanges();
       });
 
       $PI.onDidReceiveGlobalSettings(({ payload: { settings } }: any) => {
