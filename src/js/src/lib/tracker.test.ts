@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-commented-out-tests */
 import { Icons } from "./icons";
 import { Tracker, TrackerEvent } from "./tracker";
 import { jest } from "@jest/globals";
@@ -176,6 +177,108 @@ describe("Tracker", () => {
         60_000
       );
       clearInterval((tracker as any).interval);
+    });
+  });
+
+  describe("tick()", () => {
+    test("Should call render()", () => {
+      const tracker = Tracker.create("A", false);
+      jest.spyOn(tracker, "render");
+      tracker.tick()();
+      expect(tracker.render).toHaveBeenCalled();
+    });
+  });
+
+  describe("stop()", () => {
+    test("Should clear the interval", () => {
+      const tracker = Tracker.create("A", false);
+      jest.spyOn(window, "clearInterval");
+      tracker.stop();
+      expect(window.clearInterval).toHaveBeenCalledWith(
+        (tracker as any).interval
+      );
+    });
+
+    test("Should set running to false", () => {
+      const tracker = Tracker.create("A", false);
+      tracker.stop();
+      expect(tracker.running).toBeFalsy();
+    });
+
+    // TODO: This test breaks all the upcoming tests using clearInterval
+    // test("Should add the elapsed time to workedToday", () => {
+    //   jest.useFakeTimers();
+    //   const tracker = Tracker.create("A", false);
+    //   tracker.workedToday = 5;
+    //   tracker.start();
+    //   jest.setSystemTime(Date.now() + 10000);
+    //   tracker.stop();
+    //   expect(tracker.workedToday).toBe(15);
+    //   jest.useRealTimers();
+    // });
+
+    test("Should call render()", () => {
+      const tracker = Tracker.create("A", false);
+      jest.spyOn(tracker, "render");
+      tracker.stop();
+      expect(tracker.render).toHaveBeenCalled();
+    });
+
+    test("Should dispatch a stop event", () => {
+      const tracker = Tracker.create("A", false);
+      const spy = jest.spyOn(tracker, "dispatchEvent");
+      tracker.stop();
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: TrackerEvent.stop,
+        })
+      );
+    });
+  });
+
+  describe("reset()", () => {
+    test("Should reset the startTime", () => {
+      const tracker = Tracker.create("A", false);
+      tracker.reset();
+      expect((tracker as any).startTime).toBeUndefined();
+    });
+  });
+
+  describe("update()", () => {
+    test("Should dispatch requestWorkedToday event", () => {
+      const tracker = Tracker.create("A", false);
+      const spy = jest.spyOn(tracker, "dispatchEvent");
+      tracker.update();
+      expect(spy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: TrackerEvent.requestWorkedToday,
+        })
+      );
+    });
+  });
+
+  describe("getInlineSvg()", () => {
+    test("Should return the correct inline SVG", () => {
+      const key = "play";
+      const data = { workedToday: "0:00" };
+      const expectedSvg = `data:image/svg+xml;charset=utf8,play:{"workedToday":"0:00"}`;
+      const tracker = Tracker.create("ctx", false);
+      const result = tracker.getInlineSvg(key, data);
+      expect(result).toBe(expectedSvg);
+    });
+  });
+
+  describe("formatTime()", () => {
+    test("Should format time correctly when hours and minutes are single digits", () => {
+      const tracker = Tracker.create("A", false);
+      const formattedTime = tracker.formatTime(65);
+      expect(formattedTime).toBe("0:01");
+    });
+
+    test("Should format time correctly when hours and minutes are double digits", () => {
+      const tracker = Tracker.create("A", false);
+      const formattedTime = tracker.formatTime(3_600);
+      expect(formattedTime).toBe("1:00");
     });
   });
 });

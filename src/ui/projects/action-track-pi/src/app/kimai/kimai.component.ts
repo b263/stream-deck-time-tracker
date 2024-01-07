@@ -21,6 +21,7 @@ import { DEFAULT_SETTINGS } from '../app.component';
 import { STORE } from '../app.config';
 
 const backendProvider = 'kimai' as const;
+const storagePrefix = 'ActionTrackPI:KimaiComponent' as const;
 
 @Component({
   selector: 'app-kimai',
@@ -35,8 +36,21 @@ export class KimaiComponent {
   private readonly zone = inject(NgZone);
   private readonly api = inject(ApiFactoryService);
 
-  @Input()
-  public isAuthenticated = false;
+  @Input({ required: true })
+  public set isAuthenticated(isAuthenticated: boolean) {
+    this._isAuthenticated = isAuthenticated;
+    if (isAuthenticated) {
+      this.loadProjects();
+    }
+  }
+  public get isAuthenticated(): boolean {
+    return this._isAuthenticated;
+  }
+  private _isAuthenticated = false;
+
+  // TODO: Remove if not required later
+  @Input({ required: true })
+  public context!: string;
 
   public readonly form = new FormGroup({
     projectId: new FormControl(0),
@@ -50,6 +64,34 @@ export class KimaiComponent {
   public loadingActivities$ = new BehaviorSubject<boolean>(false);
 
   constructor() {
+    this.getInitialData();
+  }
+
+  private async getInitialData() {
+    const settings = (await this.getSettings())?.kimai;
+    const projects = localStorage.getItem(`${storagePrefix}:projects`);
+    const activities = localStorage.getItem(
+      `${storagePrefix}:activities:${settings?.projectId}`
+    );
+    console.log('getInitialData', { settings, projects, activities });
+    this.zone.run(() => {
+      if (settings?.projectId) {
+        this.form.get('projectId')?.patchValue(settings.projectId);
+      }
+      if (settings?.activityId) {
+        this.form.get('activityId')?.patchValue(settings.activityId);
+      }
+      if (projects) {
+        this.projects$.next(JSON.parse(projects));
+      }
+      if (activities) {
+        this.activities$.next(JSON.parse(activities));
+      }
+    });
+    this.observeFormValueChanges();
+  }
+
+  private observeFormValueChanges() {
     this.form.valueChanges
       .pipe(
         distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
@@ -84,15 +126,18 @@ export class KimaiComponent {
     const projects = response.body;
     this.form.get('projectId')?.patchValue(projectId, { emitEvent: false });
     console.log('projects', projects);
-    this.projects$.next(projects);
-    this.zone.run(() => this.loadingProjects$.next(false));
+    localStorage.setItem(`${storagePrefix}:projects`, JSON.stringify(projects));
+    this.zone.run(() => {
+      this.projects$.next(projects);
+      this.loadingProjects$.next(false);
+    });
     if (projectId > 0) {
       this.loadActivities(projectId);
     }
   }
 
   async loadActivities(projectId: number) {
-    if (projectId == 0) return;
+    if (!projectId) return;
     this.zone.run(() => this.loadingActivities$.next(true));
     const response = await (await this.getApi()).getActivities(projectId);
     if (!response.success) {
@@ -104,8 +149,14 @@ export class KimaiComponent {
     const activityId = settings.kimai!.activityId;
     this.form.get('activityId')?.patchValue(activityId, { emitEvent: false });
     await this.resetActivityIfNotInProject(activities, activityId);
-    this.activities$.next(activities);
-    this.zone.run(() => this.loadingActivities$.next(false));
+    localStorage.setItem(
+      `${storagePrefix}:activities:${projectId}`,
+      JSON.stringify(activities)
+    );
+    this.zone.run(() => {
+      this.activities$.next(activities);
+      this.loadingActivities$.next(false);
+    });
   }
 
   private async getSettings(): Promise<PluginSettings> {
