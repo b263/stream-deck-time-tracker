@@ -1,6 +1,6 @@
-# Time tracker plugin for Elgato Stream Deck (v0.6.0)
+# Time tracker plugin for Elgato Stream Deck (v0.7.0)
 
-[![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/b263/stream-deck-time-tracker/latest/total?style=for-the-badge&label=Download)](https://github.com/b263/stream-deck-time-tracker/releases/latest/download/dev.b263.time-tracker.streamDeckPlugin)
+[![Download](https://img.shields.io/badge/Download-green?style=for-the-badge)](https://github.com/b263/stream-deck-time-tracker/releases/latest/download/dev.b263.time-tracker.streamDeckPlugin)
 ![Last commit](https://img.shields.io/github/last-commit/b263/stream-deck-time-tracker/main?style=for-the-badge)
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M3SNODI)
