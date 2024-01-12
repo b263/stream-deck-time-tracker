@@ -77,7 +77,7 @@ export class Tracker extends EventTarget {
   }
 
   stop() {
-    clearInterval(this.interval);
+    window.clearInterval(this.interval);
     this.running = false;
     this.workedToday! += this.timeElapsed;
     this.render();
@@ -86,6 +86,10 @@ export class Tracker extends EventTarget {
 
   reset() {
     this.startTime = undefined;
+  }
+
+  update() {
+    this.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
   }
 
   render() {

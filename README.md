@@ -1,6 +1,7 @@
-# Time tracker plugin for Elgato Stream Deck (v0.6.0)
+# Time tracker plugin for Elgato Stream Deck
 
-[![GitHub release (latest by SemVer including pre-releases)](https://img.shields.io/github/downloads-pre/b263/stream-deck-time-tracker/latest/total?style=for-the-badge&label=Download)](https://github.com/b263/stream-deck-time-tracker/releases/latest/download/dev.b263.time-tracker.streamDeckPlugin)
+[![Download](https://img.shields.io/badge/Download-v0.7.0-yellow?style=for-the-badge)](https://github.com/b263/stream-deck-time-tracker/releases/latest/download/dev.b263.time-tracker.streamDeckPlugin)
+![Status](https://img.shields.io/badge/Release_status-beta-red?style=for-the-badge)
 ![Last commit](https://img.shields.io/github/last-commit/b263/stream-deck-time-tracker/main?style=for-the-badge)
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M3SNODI)
@@ -13,11 +14,11 @@ Kimai can be [self-hosted](https://www.kimai.org/documentation/chapter-on-premis
 
 ## How it works
 
-Adds a button for tracking time on projects or tasks. Displays the time that has been tracked today and on the current time period.
+The plugin adds a button for tracking time on projects or tasks. It displays the time that has been tracked today and on the current time period.
 
 ### Prerequisites
 
-You need to have at lease one project and one activity set up in Kimai.
+You need to have at lease one project with one activity set up in Kimai.
 
 In the plugin you provide your credentials and select the project and activity on which time should be tracked.
 

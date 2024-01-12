@@ -1,16 +1,38 @@
-<div class="sdpi-wrapper">
-  <div class="sdpi-item">
-    <div class="sdpi-item-label">Platform</div>
-    <button
-      class="sdpi-item-value max30"
-      (click)="openExternalSettings()"
-      type="button"
-    >
-      Settings
-    </button>
+<ng-container *ngIf="context$ | async as context">
+  <div class="sdpi-wrapper">
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Platform</div>
+      <button
+        class="sdpi-item-value max30"
+        (click)="openExternalSettings()"
+        type="button"
+      >
+        Settings
+      </button>
+    </div>
+
+    <hr />
+
+    <app-kimai
+      [context]="context"
+      [isAuthenticated]="isKimaiAuthenticated"
+    ></app-kimai>
+
+    <hr />
+
+    <div type="checkbox" class="sdpi-item">
+      <div class="sdpi-item-label">Debug info</div>
+      <input
+        class="sdpi-item-value"
+        [formControl]="debugFC"
+        id="debug"
+        type="checkbox"
+        value="on"
+        (change)="cdr.detectChanges()"
+      />
+      <label for="debug"><span></span>enable</label>
+    </div>
+
+    <app-debug *ngIf="debugFC.value === true"></app-debug>
   </div>
-
-  <hr />
-
-  <app-kimai [isAuthenticated]="isKimaiAuthenticated"></app-kimai>
-</div>
+</ng-container>
