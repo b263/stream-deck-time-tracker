@@ -13,11 +13,11 @@ Kimai can be [self-hosted](https://www.kimai.org/documentation/chapter-on-premis
 
 ## How it works
 
-Adds a button for tracking time on projects or tasks. Displays the time that has been tracked today and on the current time period.
+The plugin adds a button for tracking time on projects or tasks. It displays the time that has been tracked today and on the current time period.
 
 ### Prerequisites
 
-You need to have at lease one project and one activity set up in Kimai.
+You need to have at lease one project with one activity set up in Kimai.
 
 In the plugin you provide your credentials and select the project and activity on which time should be tracked.
 
