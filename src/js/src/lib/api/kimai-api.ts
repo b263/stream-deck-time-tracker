@@ -1,11 +1,5 @@
 import { format, startOfToday } from "date-fns";
-import {
-  ApiResponse,
-  Category,
-  TimeEntry,
-  TrackingItem,
-  tryFetch,
-} from "./api";
+import { ApiResponse, Category, TrackingItem, tryFetch } from "./api";
 import { KimaiBackendProviderPluginConfig } from "../types";
 
 type ApiConfig = {
@@ -13,6 +7,9 @@ type ApiConfig = {
   user: string;
   token: string;
 };
+
+export const kimaiDateFormat = "yyyy-MM-dd'T'HH:mm:ss";
+export const kimaiDateFormatTz = "yyyy-MM-dd'T'HH:mm:ssxx";
 
 export class KimaiApi {
   static instance: KimaiApi | null = null;
@@ -87,7 +84,7 @@ export class KimaiApi {
     this.assertValidConfig();
     const url = `${this.#baseUrl}api/timesheets`;
     const body = {
-      begin: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
+      begin: format(new Date(), kimaiDateFormat),
       project: projectId,
       activity: activityId,
       description: "",
@@ -110,6 +107,19 @@ export class KimaiApi {
     return tryFetch<any>(url, options);
   }
 
+  async getCurrentlyActive(projectId: number, activityId: number) {
+    this.assertValidConfig();
+    const params = new URLSearchParams({
+      active: "1",
+      project: String(projectId),
+      activity: String(activityId),
+    });
+    const url = `${this.#baseUrl}api/timesheets?${params.toString()}`;
+    const response = await tryFetch<TrackingItem[]>(url, this.fetchOptions);
+    if (!response.success) return null;
+    return response.body.length ? response.body[0] : null;
+  }
+
   async getProjects() {
     this.assertValidConfig();
     const url = `${this.#baseUrl}api/projects`;
@@ -128,7 +138,7 @@ export class KimaiApi {
   async listTodaysTimeEntries(
     projectId: number,
     activityId: number
-  ): Promise<ApiResponse<TimeEntry[]>> {
+  ): Promise<ApiResponse<TrackingItem[]>> {
     this.assertValidConfig();
     if (!projectId || !activityId) {
       return {
@@ -139,11 +149,11 @@ export class KimaiApi {
       };
     }
     const params = new URLSearchParams({
-      begin: format(startOfToday(), "yyyy-MM-dd'T'HH:mm:ss"),
+      begin: format(startOfToday(), kimaiDateFormat),
       "projects[]": String(projectId),
       "activities[]": String(activityId),
     });
     const url = `${this.#baseUrl}api/timesheets?${params.toString()}`;
-    return tryFetch<TimeEntry[]>(url, this.fetchOptions);
+    return tryFetch<TrackingItem[]>(url, this.fetchOptions);
   }
 }

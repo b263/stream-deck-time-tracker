@@ -5,6 +5,7 @@ export const TrackerEvent = {
   start: "start",
   stop: "stop",
   requestWorkedToday: "requestWorkedToday",
+  checkIfCurrentlyActive: "checkIfCurrentlyActive",
 } as const;
 
 export class Tracker extends EventTarget {
@@ -37,6 +38,7 @@ export class Tracker extends EventTarget {
   public running: boolean = false;
   public workedToday: number | undefined;
   private interval: number | undefined;
+  private checkedIfCurrentlyActive: boolean = false;
 
   constructor(context: string, running: boolean) {
     console.log("Tracker.constructor(context, running)", { context, running });
@@ -52,6 +54,10 @@ export class Tracker extends EventTarget {
     if (typeof this.workedToday !== "number") {
       this.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
     }
+    if (!this.checkedIfCurrentlyActive) {
+      this.dispatchEvent(new Event(TrackerEvent.checkIfCurrentlyActive));
+      this.checkedIfCurrentlyActive = true;
+    }
   }
   public get settings(): PluginSettings | undefined {
     return this.#settings;
@@ -62,14 +68,19 @@ export class Tracker extends EventTarget {
     return Math.floor((new Date().getTime() - this.startTime?.getTime()) / 1e3);
   }
 
-  start() {
+  start(startTime?: Date) {
+    console.log("Tracker.start(startTime)", { startTime });
     this.running = true;
-    this.startTime = new Date();
+    this.startTime = startTime ?? new Date();
     this.render();
     Tracker.pauseOtherTrackers(this);
-    this.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
-    this.dispatchEvent(new Event(TrackerEvent.start));
     this.interval = window.setInterval(this.tick(), 6e4);
+    if (!startTime) {
+      this.dispatchEvent(new Event(TrackerEvent.requestWorkedToday));
+      this.dispatchEvent(new Event(TrackerEvent.start));
+    } else {
+      // A given start time means that the tracker was started in the backend.
+    }
   }
 
   tick() {
