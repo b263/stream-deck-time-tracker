@@ -2,7 +2,7 @@ import { format, startOfToday } from "date-fns";
 import { ApiResponse, Category, TrackingItem, tryFetch } from "./api";
 import { KimaiBackendProviderPluginConfig } from "../types";
 
-type ApiConfig = {
+export type ApiConfig = {
   url: string;
   user: string;
   token: string;
@@ -53,6 +53,13 @@ export class KimaiApi {
     this.#baseUrl = url;
     this.#user = user;
     this.#token = token;
+  }
+  get config(): ApiConfig {
+    return {
+      url: this.#baseUrl ?? "",
+      user: this.#user ?? "",
+      token: this.#token ?? "",
+    };
   }
 
   get fetchOptions() {
