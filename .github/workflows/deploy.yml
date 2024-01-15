@@ -1,10 +1,5 @@
 name: Deploy docs to GitHub Pages
 
-defaults:
-  run:
-    shell: bash
-    working-directory: ./src/js
-
 on:
   # Runs on pushes targeting the `main` branch. Change this to `master` if you're
   # using the `master` branch as the default branch.
@@ -29,6 +24,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./src/js
     steps:
       - name: Checkout
         uses: actions/checkout@v3
