@@ -38,7 +38,7 @@ jobs:
       - name: Logging
         run: |
           ls -la
-          ls -la src/js
+          ls -la src
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
