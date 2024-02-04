@@ -54,6 +54,7 @@ export class KimaiApi {
     this.#user = user;
     this.#token = token;
   }
+
   get config(): ApiConfig {
     return {
       url: this.#baseUrl ?? "",
@@ -84,10 +85,22 @@ export class KimaiApi {
     }
   }
 
-  async startTracking({
-    projectId,
-    activityId,
-  }: KimaiBackendProviderPluginConfig): Promise<ApiResponse<TrackingItem>> {
+  async startTracking(
+    config: KimaiBackendProviderPluginConfig,
+  ): Promise<ApiResponse<TrackingItem>> {
+    if (!config?.activityId || !config?.projectId) {
+      $SD.logMessage(
+        "Invalid config. projectId and activityId must be defined. Current values: " +
+          JSON.stringify(config),
+      );
+      return {
+        success: false,
+        error: `Invalid config. projectId and activityId must be defined. Current values: ${JSON.stringify(
+          config,
+        )}`,
+      };
+    }
+    const { projectId, activityId } = config;
     this.assertValidConfig();
     const url = `${this.#baseUrl}api/timesheets`;
     const body = {
@@ -144,14 +157,14 @@ export class KimaiApi {
 
   async listTodaysTimeEntries(
     projectId: number,
-    activityId: number
+    activityId: number,
   ): Promise<ApiResponse<TrackingItem[]>> {
     this.assertValidConfig();
     if (!projectId || !activityId) {
       return {
         success: false,
         error: `projectId and activityId must be defined. Current values: ${JSON.stringify(
-          { projectId, activityId }
+          { projectId, activityId },
         )}`,
       };
     }
