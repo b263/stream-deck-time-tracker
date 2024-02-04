@@ -6,6 +6,7 @@
 
 DistributionTool
 
+.idea
 .DS_Store
 /*.svg
 

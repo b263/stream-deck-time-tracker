@@ -1,9 +1,10 @@
+import { parse } from "date-fns";
 import { AppEvent, StateKey } from "../constants";
 import { Store } from "../store/store";
 import { Tracker, TrackerEvent } from "../tracker";
 import { AppState, KimaiBackendProviderPluginConfig } from "../types";
 import { ApiTrackerConnector } from "./api";
-import { KimaiApi } from "./kimai-api";
+import { KimaiApi, kimaiDateFormatTz } from "./kimai-api";
 
 export class KimaiApiTrackerConnector implements ApiTrackerConnector {
   #api: KimaiApi;
@@ -13,6 +14,7 @@ export class KimaiApiTrackerConnector implements ApiTrackerConnector {
     onStart: this.onStart.bind(this),
     onStop: this.onStop.bind(this),
     onRequestWorkedToday: this.onRequestWorkedToday.bind(this),
+    onCheckIfCurrentlyActive: this.onCheckIfCurrentlyActive.bind(this),
   };
 
   backendProvider = "kimai" as const;
@@ -70,6 +72,30 @@ export class KimaiApiTrackerConnector implements ApiTrackerConnector {
     }
   }
 
+  async onCheckIfCurrentlyActive() {
+    console.log(
+      "KimaiApiTrackerConnector.onCheckIfCurrentlyActive()",
+      this.settings(this.#tracker)
+    );
+    const projectId = this.settings(this.#tracker)?.projectId;
+    const activityId = this.settings(this.#tracker)?.activityId;
+    if (this.#tracker.running) {
+      throw new Error(
+        "Tracker has already been started in Stream Deck. Check if there's an active event in the backend is too late."
+      );
+    }
+    if (projectId && activityId) {
+      const event = await this.#api.getCurrentlyActive(projectId, activityId);
+      if (event) {
+        this.#store.patchState({
+          [StateKey.currentEvent]: event,
+        });
+        const startTime = parse(event.begin, kimaiDateFormatTz, new Date());
+        this.#tracker.start(startTime);
+      }
+    }
+  }
+
   connect(tracker: Tracker) {
     this.#tracker = tracker;
 
@@ -78,6 +104,10 @@ export class KimaiApiTrackerConnector implements ApiTrackerConnector {
     tracker.addEventListener(
       TrackerEvent.requestWorkedToday,
       this.#bound.onRequestWorkedToday
+    );
+    tracker.addEventListener(
+      TrackerEvent.checkIfCurrentlyActive,
+      this.#bound.onCheckIfCurrentlyActive
     );
 
     return this;

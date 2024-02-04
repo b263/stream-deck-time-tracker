@@ -13,10 +13,8 @@ export type ApiResponse<T> =
 
 export type TrackingItem = {
   id: string | number;
-};
-
-export type TimeEntry = {
   duration: number;
+  begin: string;
 };
 
 export type Category = {
